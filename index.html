@@ -33,7 +33,7 @@
         <div></div>
     </div>
     <div class="nav" id="nav">
-        <a href="index.html">首页</a>
+        <a href="#">首页</a>
         <a href="#">标签</a>
         <a href="#">联系我们</a>
         <a href="#">服务条款</a>
@@ -51,7 +51,9 @@
             let nav = document.getElementById("nav");
             nav.style.display = (nav.style.display === "block") ? "none" : "block";
         }
-        function goHome() { alert("返回首页"); }
+        function goHome() { 
+    window.location.href = "/"; 
+}
         function search() { alert("搜索功能"); }
     </script>
 </body>
