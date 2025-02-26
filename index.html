@@ -17,6 +17,22 @@
         .nav a { display: block; color: white; text-decoration: none; margin: 10px 0; }
         .video-info { position: absolute; bottom: 70px; left: 10px; }
         .video-info p { margin: 5px 0; }
+        
+        .nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+}
+.nav.active {
+    display: block;
+}
+
+        
     </style>
 </head>
 <body>
@@ -92,11 +108,7 @@
 
 function toggleMenu() {
     let nav = document.getElementById("nav");
-    if (nav.style.display === "block" || nav.style.display === "") {
-        nav.style.display = "none";
-    } else {
-        nav.style.display = "block";
-    }
+    nav.classList.toggle("active");
 }
 
     function goHome() {
