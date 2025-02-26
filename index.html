@@ -46,12 +46,14 @@
     </div>
     <script>
         async function loadVideo() {
-            let response = await fetch('videos/video1.json');
-            let data = await response.json();
-            document.getElementById("video").src = data.videoUrl;
-            document.getElementById("username").innerText = "@" + data.username;
-            document.getElementById("tags").innerText = data.tags.join(" ");
-        }
+    let response = await fetch('videos/videos.json');
+    let videos = await response.json();
+    let randomIndex = Math.floor(Math.random() * videos.length);
+    let data = videos[randomIndex];
+    document.getElementById("video").src = data.videoUrl;
+    document.getElementById("username").innerText = "@" + data.username;
+    document.getElementById("tags").innerText = data.tags.join(" ");
+}
         function togglePlay() {
             let video = document.getElementById("video");
             video.paused ? video.play() : video.pause();
