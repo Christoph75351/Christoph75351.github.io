@@ -15,11 +15,17 @@
         .menu div { width: 30px; height: 4px; background: white; margin: 5px 0; }
         .nav { display: none; position: fixed; top: 0; right: 0; width: 200px; height: 100vh; background: rgba(0, 0, 0, 0.8); padding: 20px; }
         .nav a { display: block; color: white; text-decoration: none; margin: 10px 0; }
+        .video-info { position: absolute; bottom: 70px; left: 10px; }
+        .video-info p { margin: 5px 0; }
     </style>
 </head>
 <body>
     <div class="video-container">
-        <video id="video" src="https://example.com/video.mp4" autoplay loop></video>
+        <video id="video" autoplay loop></video>
+    </div>
+    <div class="video-info">
+        <p id="username">@用户名</p>
+        <p id="tags">#标签</p>
     </div>
     <div class="bottom-bar">
         <button onclick="goHome()">🏠</button>
@@ -39,9 +45,16 @@
         <a href="#">服务条款</a>
     </div>
     <script>
+        async function loadVideo() {
+            let response = await fetch('videos/video1.json');
+            let data = await response.json();
+            document.getElementById("video").src = data.videoUrl;
+            document.getElementById("username").innerText = "@" + data.username;
+            document.getElementById("tags").innerText = data.tags.join(" ");
+        }
         function togglePlay() {
             let video = document.getElementById("video");
-            if (video.paused) { video.play(); } else { video.pause(); }
+            video.paused ? video.play() : video.pause();
         }
         function toggleSound() {
             let video = document.getElementById("video");
@@ -51,10 +64,9 @@
             let nav = document.getElementById("nav");
             nav.style.display = (nav.style.display === "block") ? "none" : "block";
         }
-        function goHome() { 
-    window.location.href = "/"; 
-}
+        function goHome() { window.location.href = "/"; }
         function search() { alert("搜索功能"); }
+        window.onload = loadVideo;
     </script>
 </body>
 </html>
