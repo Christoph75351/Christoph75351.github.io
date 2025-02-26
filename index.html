@@ -90,10 +90,14 @@
         video.muted = !video.muted;
     }
 
-    function toggleMenu() {
-        let nav = document.getElementById("nav");
-        nav.style.display = (nav.style.display === "block") ? "none" : "block";
+function toggleMenu() {
+    let nav = document.getElementById("nav");
+    if (nav.style.display === "block" || nav.style.display === "") {
+        nav.style.display = "none";
+    } else {
+        nav.style.display = "block";
     }
+}
 
     function goHome() {
         window.location.href = "/";
