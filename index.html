@@ -32,6 +32,26 @@
     display: block;
 }
 
+#searchContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    display: none; /* 默认隐藏 */
+    z-index: 1000;
+}
+#searchInput {
+    width: 200px;
+    padding: 5px;
+}
+#searchButton {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
       
     </style>
 </head>
@@ -105,18 +125,42 @@ document.addEventListener("touchend", (evt) => {
 }, false);
 
 document.addEventListener("DOMContentLoaded", function() {
-    let searchInput = document.createElement("input");
-    searchInput.type = "text";
-    searchInput.id = "searchInput";
-    searchInput.placeholder = "搜索用户名或标签";
-    
-    let searchButton = document.createElement("button");
-    searchButton.innerText = "搜索";
-    searchButton.onclick = searchVideos;
+    // 创建搜索框容器
+    let searchContainer = document.createElement("div");
+    searchContainer.id = "searchContainer";
+    searchContainer.innerHTML = `
+        <input type="text" id="searchInput" placeholder="搜索用户名或标签">
+        <button id="searchButton">搜索</button>
+    `;
+    document.body.appendChild(searchContainer);
 
-    document.body.insertBefore(searchInput, document.body.firstChild);
-    document.body.insertBefore(searchButton, document.body.firstChild);
+    let searchInput = document.getElementById("searchInput");
+    let searchButton = document.getElementById("searchButton");
+
+    // 绑定搜索事件
+    searchButton.onclick = function() {
+        searchVideos();
+        closeSearch(); // 搜索后关闭
+    };
+
+    // 点击搜索按钮（放在底部控制栏）
+    document.getElementById("searchIcon").addEventListener("click", function() {
+        searchContainer.style.display = "block"; // 显示搜索框
+        searchInput.focus();
+    });
+
+    // 点击页面其他地方关闭搜索框
+    document.addEventListener("click", function(event) {
+        if (!searchContainer.contains(event.target) && event.target.id !== "searchIcon") {
+            closeSearch();
+        }
+    });
+
+    function closeSearch() {
+        searchContainer.style.display = "none";
+    }
 });
+
 
 window.onload = loadVideos;
 
@@ -124,7 +168,7 @@ window.onload = loadVideos;
 
     <div class="bottom-bar">
         <button onclick="goHome()">🏠</button>
-        <button onclick="search()">🔍</button>
+        <button id="searchIcon">🔍</button>
         <button onclick="togglePlay()">⏸️</button>
         <button onclick="toggleSound()">🔊</button>
     </div>
