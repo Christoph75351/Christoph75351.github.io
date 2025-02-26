@@ -119,6 +119,34 @@ function toggleMenu() {
         alert("搜索功能");
     }
 
+document.addEventListener("DOMContentLoaded", function() {
+    let searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.id = "searchInput";
+    searchInput.placeholder = "搜索用户名或标签";
+    
+    let searchButton = document.createElement("button");
+    searchButton.innerText = "搜索";
+    searchButton.onclick = searchVideos;
+
+    document.body.insertBefore(searchInput, document.body.firstChild);
+    document.body.insertBefore(searchButton, document.body.firstChild);
+});
+
+function searchVideos() {
+    let query = document.getElementById("searchInput").value.trim().toLowerCase();
+    if (query === "") {
+        filteredVideos = [...videos]; // 显示所有视频
+    } else {
+        filteredVideos = videos.filter(video =>
+            video.username.toLowerCase().includes(query) ||
+            video.tags.some(tag => tag.toLowerCase().includes(query))
+        );
+    }
+    playRandomVideo(); // 重新播放搜索结果中的视频
+}
+
+       
     window.onload = loadVideos;
 </script>
 
