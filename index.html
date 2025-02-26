@@ -28,7 +28,7 @@
         <p id="tags">#标签</p>
     </div>
 
-    <script>
+   <script>
     let videos = [];
     let currentIndex = 0;
 
@@ -53,34 +53,31 @@
 
     // PC 端鼠标滚轮事件
     document.addEventListener("wheel", (event) => {
-        if (event.deltaY > 0) {
+        if (event.deltaY > 10) {
             playRandomVideo();
-        } else if (event.deltaY < 0) {
+        } else if (event.deltaY < -10) {
             playRandomVideo();
         }
     });
 
-    // 触摸滑动事件（移动端）
-    let xDown = null;
-    let yDown = null;
+    // 触摸滑动事件（移动端优化）
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let touchStartTime = 0;
 
     document.addEventListener("touchstart", (evt) => {
-        xDown = evt.touches[0].clientX;
-        yDown = evt.touches[0].clientY;
+        touchStartY = evt.touches[0].clientY;
+        touchStartTime = new Date().getTime(); // 记录时间，防止长按误触
     }, false);
 
-    document.addEventListener("touchmove", (evt) => {
-        if (!xDown || !yDown) return;
-        let xUp = evt.touches[0].clientX;
-        let yUp = evt.touches[0].clientY;
-        let yDiff = yDown - yUp;
+    document.addEventListener("touchend", (evt) => {
+        touchEndY = evt.changedTouches[0].clientY;
+        let timeDiff = new Date().getTime() - touchStartTime;
 
-        if (Math.abs(yDiff) > 20) { // 避免误触
+        let yDiff = touchStartY - touchEndY;
+        if (Math.abs(yDiff) > 10 && timeDiff < 500) { // 限制滑动速度，避免误触
             playRandomVideo();
         }
-
-        xDown = null;
-        yDown = null;
     }, false);
 
     function togglePlay() {
@@ -108,6 +105,7 @@
 
     window.onload = loadVideos;
 </script>
+
 
     
     <div class="bottom-bar">
