@@ -32,7 +32,7 @@
     display: block;
 }
 
-        
+      
     </style>
 </head>
 <body>
@@ -45,79 +45,64 @@
     </div>
 
    <script>
-    let videos = [];
-    let currentIndex = 0;
+  let videos = [];
+let filteredVideos = []; // 存储搜索结果
 
-    async function loadVideos() {
-        try {
-            let response = await fetch('videos/videos.json');
-            videos = await response.json();
-            playRandomVideo();
-        } catch (error) {
-            console.error("加载视频列表失败:", error);
-        }
+async function loadVideos() {
+    try {
+        let response = await fetch('videos/videos.json');
+        videos = await response.json();
+        filteredVideos = [...videos]; // 默认播放所有视频
+        playRandomVideo();
+    } catch (error) {
+        console.error("加载视频列表失败:", error);
     }
-
-    function playRandomVideo() {
-        if (videos.length === 0) return;
-        let randomIndex = Math.floor(Math.random() * videos.length);
-        let data = videos[randomIndex];
-        document.getElementById("video").src = data.videoUrl;
-        document.getElementById("username").innerText = "@" + data.username;
-        document.getElementById("tags").innerText = data.tags.join(" ");
-    }
-
-    // PC 端鼠标滚轮事件
-    document.addEventListener("wheel", (event) => {
-        if (event.deltaY > 10) {
-            playRandomVideo();
-        } else if (event.deltaY < -10) {
-            playRandomVideo();
-        }
-    });
-
-    // 触摸滑动事件（移动端优化）
-    let touchStartY = 0;
-    let touchEndY = 0;
-    let touchStartTime = 0;
-
-    document.addEventListener("touchstart", (evt) => {
-        touchStartY = evt.touches[0].clientY;
-        touchStartTime = new Date().getTime(); // 记录时间，防止长按误触
-    }, false);
-
-    document.addEventListener("touchend", (evt) => {
-        touchEndY = evt.changedTouches[0].clientY;
-        let timeDiff = new Date().getTime() - touchStartTime;
-
-        let yDiff = touchStartY - touchEndY;
-        if (Math.abs(yDiff) > 10 && timeDiff < 500) { // 限制滑动速度，避免误触
-            playRandomVideo();
-        }
-    }, false);
-
-    function togglePlay() {
-        let video = document.getElementById("video");
-        video.paused ? video.play() : video.pause();
-    }
-
-    function toggleSound() {
-        let video = document.getElementById("video");
-        video.muted = !video.muted;
-    }
-
-function toggleMenu() {
-    let nav = document.getElementById("nav");
-    nav.classList.toggle("active");
 }
 
-    function goHome() {
-        window.location.href = "/";
+function playRandomVideo() {
+    if (filteredVideos.length === 0) {
+        alert("未找到相关视频");
+        return;
     }
+    let randomIndex = Math.floor(Math.random() * filteredVideos.length);
+    let data = filteredVideos[randomIndex];
+    document.getElementById("video").src = data.videoUrl;
+    document.getElementById("username").innerText = "@" + data.username;
+    document.getElementById("tags").innerText = data.tags.join(" ");
+}
 
-    function search() {
-        alert("搜索功能");
+function searchVideos() {
+    let query = document.getElementById("searchInput").value.trim().toLowerCase();
+    if (query === "") {
+        filteredVideos = [...videos]; // 显示所有视频
+    } else {
+        filteredVideos = videos.filter(video =>
+            video.username.toLowerCase().includes(query) ||
+            video.tags.some(tag => tag.toLowerCase().includes(query))
+        );
     }
+    playRandomVideo(); // 重新播放搜索后的结果
+}
+
+// PC 端鼠标滚轮事件
+document.addEventListener("wheel", (event) => {
+    if (event.deltaY > 10 || event.deltaY < -10) {
+        playRandomVideo();
+    }
+});
+
+// 触摸滑动事件（移动端优化）
+let touchStartY = 0;
+document.addEventListener("touchstart", (evt) => {
+    touchStartY = evt.touches[0].clientY;
+}, false);
+
+document.addEventListener("touchend", (evt) => {
+    let touchEndY = evt.changedTouches[0].clientY;
+    if (Math.abs(touchStartY - touchEndY) > 10) {
+        playRandomVideo();
+    }
+}, false);
 
 document.addEventListener("DOMContentLoaded", function() {
     let searchInput = document.createElement("input");
@@ -133,25 +118,10 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.insertBefore(searchButton, document.body.firstChild);
 });
 
-function searchVideos() {
-    let query = document.getElementById("searchInput").value.trim().toLowerCase();
-    if (query === "") {
-        filteredVideos = [...videos]; // 显示所有视频
-    } else {
-        filteredVideos = videos.filter(video =>
-            video.username.toLowerCase().includes(query) ||
-            video.tags.some(tag => tag.toLowerCase().includes(query))
-        );
-    }
-    playRandomVideo(); // 重新播放搜索结果中的视频
-}
+window.onload = loadVideos;
 
-       
-    window.onload = loadVideos;
 </script>
 
-
-    
     <div class="bottom-bar">
         <button onclick="goHome()">🏠</button>
         <button onclick="search()">🔍</button>
