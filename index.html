@@ -129,27 +129,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
 
-    // 点击搜索按钮，显示搜索框
-    searchButton.addEventListener("click", function () {
+    // 搜索按钮点击时显示搜索框
+    document.getElementById("searchIcon").addEventListener("click", function () {
         searchContainer.style.display = "block";
-        searchInput.focus(); // 聚焦输入框
+        searchInput.focus();
     });
 
-    // 点击搜索框外部，关闭搜索框
-    document.addEventListener("click", function (event) {
-        if (!searchContainer.contains(event.target) && event.target !== searchButton) {
-            searchContainer.style.display = "none";
+    // 监听回车键触发搜索
+    searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            searchVideos();
+            closeSearch();
         }
     });
 
-    // 监听键盘回车事件，按 Enter 触发搜索并关闭搜索框
-    searchInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            searchVideos(); // 触发搜索
-            searchContainer.style.display = "none"; // 关闭搜索框
+    // 关闭搜索框函数
+    function closeSearch() {
+        searchContainer.style.display = "none";
+    }
+
+    // 点击搜索框外部关闭
+    document.addEventListener("click", function (event) {
+        if (!searchContainer.contains(event.target) && event.target !== searchInput) {
+            closeSearch();
         }
     });
 });
+
 
     function closeSearch() {
         searchContainer.style.display = "none";
