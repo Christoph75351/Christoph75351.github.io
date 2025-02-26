@@ -65,7 +65,7 @@
     </div>
 
    <script>
- let videos = [];
+let videos = [];
 let filteredVideos = []; // 存储搜索结果
 
 async function loadVideos() {
@@ -102,6 +102,17 @@ function searchVideos() {
         );
     }
     playRandomVideo(); // 重新播放搜索后的结果
+}
+
+// 主页按钮点击事件
+function goHome() {
+    window.location.href = "index.html"; // 返回首页
+}
+
+// 右上角菜单切换
+function toggleMenu() {
+    let nav = document.getElementById("nav");
+    nav.classList.toggle("active");
 }
 
 // PC 端鼠标滚轮事件
