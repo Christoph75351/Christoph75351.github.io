@@ -83,9 +83,12 @@ video {
     </style>
 </head>
 <body>
+
 <div class="video-container">
     <video id="video" autoplay loop muted playsinline></video>
+    <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1">
 </div>
+
 
     <div class="video-info">
         <p id="username">@用户名</p>
@@ -258,11 +261,28 @@ function toggleSound() {
     video.muted = !video.muted;
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadVideos(); // ⬅️ 这里调用 loadVideos，确保进度条功能不会失效
+
+    const progressBar = document.getElementById("progressBar");
+    const video = document.getElementById("video");
+
+    video.addEventListener("timeupdate", function () {
+        let progress = (video.currentTime / video.duration) * 100;
+        progressBar.value = progress;
+    });
+
+    progressBar.addEventListener("input", function () {
+        let seekTime = (progressBar.value / 100) * video.duration;
+        video.currentTime = seekTime;
+    });
+});
+
+
+
+
 window.onload = loadVideos; // ⬅️ 确保 `togglePlay` 代码放在 `window.onload` 之前
-
-
-window.onload = loadVideos;
-
 
 </script>
 
