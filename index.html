@@ -357,10 +357,11 @@ window.addEventListener("orientationchange", function () {
 
 
 let uiElements = document.querySelectorAll("#bottomBar, #menu, #progressBar");
-let hideUITimer;
 let isUIVisible = true; // 追踪 UI 状态
 
 // 显示 UI
+let hideUITimer; // 计时器，只定义一次
+
 function showUI() {
     console.log("👀 UI 重新显示...");
     document.getElementById("bottomBar").style.opacity = "1";
@@ -371,7 +372,6 @@ function showUI() {
     document.getElementById("progressBar").style.visibility = "visible";
     resetHideTimer();
 }
-
 
 // 隐藏 UI
 function hideUI() {
@@ -384,29 +384,29 @@ function hideUI() {
     document.getElementById("progressBar").style.visibility = "hidden";
 }
 
-
 // 重置 UI 计时器
-let hideUITimer; // 计时器
-
 function resetHideTimer() {
     clearTimeout(hideUITimer);
     hideUITimer = setTimeout(hideUI, 3000); // ✅ 3 秒后隐藏 UI
 }
 
-
 // 监听用户交互事件
 ["mousemove", "touchstart", "click"].forEach(event => {
-    document.addEventListener(event, showUI);
+    document.addEventListener(event, function () {
+        console.log("👆 用户交互，重置隐藏计时器");
+        showUI();
+    });
 });
 
 // 页面加载时，确保 UI 可见，并开始监听
 document.addEventListener("DOMContentLoaded", function () {
-    showUI();
+    console.log("✅ 页面已加载，尝试执行 showUI()");
+    if (document.getElementById("menu")) {
+        showUI();
+    } else {
+        console.error("❌ `#menu` 未正确加载，请检查 HTML");
+    }
 });
-
-
-
-
 
 
 
