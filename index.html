@@ -106,13 +106,17 @@ video {
     opacity: 1;
     visibility: visible;
 }
+        
+.controls, .menu-icon, .progress-bar {
+    transition: opacity 0.5s ease-in-out; /* 平滑过渡 */
+}
 
+        
 .hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none; /* ✅ 确保隐藏时不可点击 */
 }
-
 
     </style>
 </head>
@@ -353,46 +357,35 @@ window.addEventListener("orientationchange", function () {
     }
 });
 
-let hideTimeout;
-let isUIVisible = true; // 追踪 UI 显示状态
 
-function showControls() {
-    if (!isUIVisible) {
-        ["bottomBar", "menu", "progressBar"].forEach(id => {
-            document.getElementById(id).classList.remove("hidden");
-        });
-        isUIVisible = true;
-    }
+let uiElements = document.querySelectorAll(".controls, .menu-icon, .progress-bar"); // 需要隐藏的 UI 元素
+let hideUITimer; // 计时器变量
+
+// 隐藏 UI
+function hideUI() {
+    uiElements.forEach(el => el.style.opacity = "0"); // 设置透明度为 0
 }
 
-function hideControls() {
-    if (isUIVisible) {
-        ["bottomBar", "menu", "progressBar"].forEach(id => {
-            document.getElementById(id).classList.add("hidden");
-        });
-        isUIVisible = false;
-    }
+// 显示 UI
+function showUI() {
+    uiElements.forEach(el => el.style.opacity = "1"); // 重新显示
+    resetUITimer(); // 重新计时
 }
 
-function resetHideTimer() {
-    showControls();
-    clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(() => {
-        console.log("⏳ UI 正在隐藏...");
-        hideControls();
-    }, 3000); // 3 秒后隐藏
+// 重置 UI 计时器
+function resetUITimer() {
+    clearTimeout(hideUITimer); // 清除旧的计时器
+    hideUITimer = setTimeout(hideUI, 3000); // 3 秒后隐藏 UI
 }
 
-// 页面加载时，显示 UI，并立即启动隐藏计时器
-document.addEventListener("DOMContentLoaded", function () {
-    showControls();
-    resetHideTimer();
-});
+// 监听用户交互事件
+document.addEventListener("mousemove", showUI);
+document.addEventListener("touchstart", showUI);
+document.addEventListener("click", showUI);
 
-// 监听用户交互（鼠标移动 / 触摸屏幕），重置隐藏计时器
-["mousemove", "touchstart", "click"].forEach(event => {
-    document.addEventListener(event, resetHideTimer);
-});
+// 初始计时，等待自动隐藏
+resetUITimer();
+
 
 
 
