@@ -360,37 +360,46 @@ window.addEventListener("orientationchange", function () {
 });
 
 
-let uiElements = document.querySelectorAll("#bottomBar, #menu, #progressBar"); // ✅ 直接选择正确的 ID
+let uiElements = document.querySelectorAll("#bottomBar, #menu, #progressBar");
 let hideUITimer;
-
-// 隐藏 UI
-function hideUI() {
-    uiElements.forEach(el => {
-        el.classList.add("hidden"); // ✅ 通过 CSS 进行隐藏
-    });
-}
+let isUIVisible = true; // 追踪 UI 状态
 
 // 显示 UI
 function showUI() {
-    uiElements.forEach(el => {
-        el.classList.remove("hidden"); // ✅ 重新显示 UI
-    });
-    resetUITimer(); // ✅ 重新计时
+    if (!isUIVisible) {
+        uiElements.forEach(el => el.classList.remove("hidden"));
+        isUIVisible = true;
+    }
+    resetUITimer();
+}
+
+// 隐藏 UI
+function hideUI() {
+    if (isUIVisible) {
+        uiElements.forEach(el => el.classList.add("hidden"));
+        isUIVisible = false;
+    }
 }
 
 // 重置 UI 计时器
 function resetUITimer() {
-    clearTimeout(hideUITimer); // ✅ 清除旧的计时器
-    hideUITimer = setTimeout(hideUI, 3000); // ✅ 3 秒后隐藏 UI
+    clearTimeout(hideUITimer);
+    hideUITimer = setTimeout(() => {
+        console.log("⏳ UI 正在隐藏...");
+        hideUI();
+    }, 3000);
 }
 
 // 监听用户交互事件
-document.addEventListener("mousemove", showUI);
-document.addEventListener("touchstart", showUI);
-document.addEventListener("click", showUI);
+["mousemove", "touchstart", "click"].forEach(event => {
+    document.addEventListener(event, showUI);
+});
 
-// 初始计时，等待自动隐藏
-resetUITimer();
+// 页面加载时，确保 UI 可见，并开始监听
+document.addEventListener("DOMContentLoaded", function () {
+    showUI();
+});
+
 
 
 
