@@ -356,22 +356,24 @@ window.addEventListener("orientationchange", function () {
 let hideTimeout;
 
 function showControls() {
-    document.getElementById("bottomBar").classList.remove("hidden");
-    document.getElementById("menu").classList.remove("hidden");
-    document.getElementById("progressBar").classList.remove("hidden");
+    ["bottomBar", "menu", "progressBar"].forEach(id => {
+        document.getElementById(id).classList.remove("hidden");
+    });
 }
 
 function hideControls() {
-    document.getElementById("bottomBar").classList.add("hidden");
-    document.getElementById("menu").classList.add("hidden");
-    document.getElementById("progressBar").classList.add("hidden");
+    ["bottomBar", "menu", "progressBar"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+    });
 }
-
 
 function resetHideTimer() {
     showControls();
     clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(hideControls, 3000); // 3 秒后隐藏
+    hideTimeout = setTimeout(() => {
+        console.log("⏳ UI 正在隐藏...");
+        hideControls();
+    }, 3000); // 3 秒后隐藏
 }
 
 // 页面加载时，显示 UI，并立即开始监听交互
@@ -384,6 +386,7 @@ document.addEventListener("DOMContentLoaded", function () {
 ["mousemove", "touchstart", "click"].forEach(event => {
     document.addEventListener(event, resetHideTimer);
 });
+
 
 
 
