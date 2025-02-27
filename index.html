@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok 风格视频站</title>
+    
+     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: black; color: white; font-family: Arial, sans-serif; overflow: hidden; }
@@ -17,7 +20,6 @@
         .nav a { display: block; color: white; text-decoration: none; margin: 10px 0; }
         .video-info { position: absolute; bottom: 70px; left: 10px; }
         .video-info p { margin: 5px 0; }
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
         
         .nav {
     display: none;
@@ -98,17 +100,27 @@ function playRandomVideo() {
     let videoElement = document.getElementById("video");
     let videoUrl = data.videoUrl;
 
-    if (Hls.isSupported() && videoUrl.endsWith(".m3u8")) {
+    console.log("正在播放视频：", videoUrl); // 调试信息
+
+    if (videoUrl.endsWith(".m3u8")) {
+        // ✅ 先检查 Hls.js 是否正确加载
+        if (typeof Hls === "undefined") {
+            console.error("❌ Hls.js 未定义，请检查 Hls.js 是否正确加载！");
+            return;
+        }
+
         let hls = new Hls();
         hls.loadSource(videoUrl);
         hls.attachMedia(videoElement);
-    } else {
+    } 
+    else {
         videoElement.src = videoUrl;
     }
 
     document.getElementById("username").innerText = "@" + data.username;
     document.getElementById("tags").innerText = data.tags.join(" ");
 }
+
 
 function searchVideos() {
     let query = document.getElementById("searchInput").value.trim().toLowerCase();
