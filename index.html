@@ -78,7 +78,29 @@ video {
         width: auto; /* 让视频在移动端保持原比例 */
     }
 }
-     
+
+#progressBar {
+    position: fixed;
+    bottom: 50px; /* ✅ 让进度条紧贴底部控制栏 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 5px;
+    background: #ccc;
+    border-radius: 5px;
+    outline: none;
+    appearance: none;
+    z-index: 1000; /* ✅ 确保进度条不会被遮挡 */
+}
+#progressBar::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+    background: red;
+    border-radius: 50%;
+    cursor: pointer;
+    appearance: none;
+}
+        
 
     </style>
 </head>
