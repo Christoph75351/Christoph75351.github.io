@@ -10,8 +10,25 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: black; color: white; font-family: Arial, sans-serif; overflow: hidden; }
-        .video-container { position: fixed; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        video { width: 100%; height: 100%; object-fit: cover; }
+       .video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+}
+
+video {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; /* 让视频填充整个屏幕，不变形 */
+}
+
         .bottom-bar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 10px 0; background: rgba(0, 0, 0, 0.5); }
         .bottom-bar button { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
         .menu { position: fixed; top: 10px; right: 10px; cursor: pointer; }
@@ -55,20 +72,27 @@
     cursor: pointer;
 }
 
-      
+ @media (max-width: 768px) {
+    video {
+        height: 100vh;
+        width: auto; /* 让视频在移动端保持原比例 */
+    }
+}
+     
+
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <video id="video" autoplay loop></video>
-    </div>
+<div class="video-container">
+    <video id="video" autoplay loop muted playsinline></video>
+</div>
+
     <div class="video-info">
         <p id="username">@用户名</p>
         <p id="tags">#标签</p>
     </div>
 
-<div id="searchContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; z-index: 1000;">
+<div id="searchContainer">
     <input type="text" id="searchInput" placeholder="搜索用户名或标签">
     <button id="searchButton">搜索</button>
 </div>
@@ -100,26 +124,33 @@ function playRandomVideo() {
     let videoElement = document.getElementById("video");
     let videoUrl = data.videoUrl;
 
-    console.log("正在播放视频：", videoUrl); // 调试信息
+    console.log("正在播放视频：", videoUrl);
+
+    // 清除之前的 Hls.js 实例，防止冲突
+    if (videoElement.hlsInstance) {
+        videoElement.hlsInstance.destroy();
+        videoElement.hlsInstance = null;
+    }
 
     if (videoUrl.endsWith(".m3u8")) {
-        // ✅ 先检查 Hls.js 是否正确加载
-        if (typeof Hls === "undefined") {
-            console.error("❌ Hls.js 未定义，请检查 Hls.js 是否正确加载！");
+        if (Hls.isSupported()) {
+            let hls = new Hls();
+            hls.loadSource(videoUrl);
+            hls.attachMedia(videoElement);
+            videoElement.hlsInstance = hls;
+        } else {
+            console.error("❌ 你的浏览器不支持 M3U8 播放！");
             return;
         }
-
-        let hls = new Hls();
-        hls.loadSource(videoUrl);
-        hls.attachMedia(videoElement);
-    } 
-    else {
+    } else {
         videoElement.src = videoUrl;
+        videoElement.play(); // ✅ 确保 MP4 也能自动播放
     }
 
     document.getElementById("username").innerText = "@" + data.username;
     document.getElementById("tags").innerText = data.tags.join(" ");
 }
+
 
 
 function searchVideos() {
@@ -210,6 +241,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// ⏸️ 播放 / 暂停 视频
+function togglePlay() {
+    let video = document.getElementById("video");
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+// 🔊 静音 / 取消静音
+function toggleSound() {
+    let video = document.getElementById("video");
+    video.muted = !video.muted;
+}
+
+window.onload = loadVideos; // ⬅️ 确保 `togglePlay` 代码放在 `window.onload` 之前
 
 
 window.onload = loadVideos;
