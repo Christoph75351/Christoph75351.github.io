@@ -367,11 +367,15 @@ function showUI() {
 
 // 隐藏 UI
 function hideUI() {
-    if (isUIVisible) {
-        uiElements.forEach(el => el.classList.add("hidden"));
-        isUIVisible = false;
-    }
+    console.log("⏳ UI 正在隐藏..."); // ✅ 调试用，看看是否执行
+    document.getElementById("bottomBar").style.opacity = "0";
+    document.getElementById("menu").style.opacity = "0";
+    document.getElementById("progressBar").style.opacity = "0";
+    document.getElementById("bottomBar").style.visibility = "hidden";
+    document.getElementById("menu").style.visibility = "hidden";
+    document.getElementById("progressBar").style.visibility = "hidden";
 }
+
 
 // 重置 UI 计时器
 function resetUITimer() {
