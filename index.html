@@ -247,21 +247,37 @@ document.addEventListener("touchend", (evt) => {
 
 document.addEventListener("DOMContentLoaded", function () {
     loadVideos(); // ✅ 只调用一次 loadVideos()
+    console.log("✅ 页面已加载，开始监听视频进度");
+const video = document.getElementById("video");
+const progressBar = document.getElementById("progressBar");
 
-    const progressBar = document.getElementById("progressBar");
-    const video = document.getElementById("video");
-
-    // 监听视频播放进度，更新进度条
-    video.addEventListener("timeupdate", function () {
-        let progress = (video.currentTime / video.duration) * 100;
-        progressBar.value = progress;
+    // 🎯 确保视频加载后重置进度条
+    video.addEventListener("loadedmetadata", function () {
+        progressBar.value = 0; // 视频加载后重置进度条
     });
 
-    // 监听进度条拖动，跳转到对应时间
+    // 🎯 监听 `timeupdate`，让进度条随视频播放自动更新
+    video.addEventListener("timeupdate", function () {
+        if (!isDragging) { // 如果用户正在拖动进度条，就不更新
+            const progress = (video.currentTime / video.duration) * 100;
+            progressBar.value = progress;
+        }
+    });
+
+    let isDragging = false; // 是否正在拖动进度条
+
+    // 🎯 监听 `input` 事件，拖动进度条时调整视频进度
     progressBar.addEventListener("input", function () {
-        let seekTime = (progressBar.value / 100) * video.duration;
+        isDragging = true; // 开始拖动
+        const seekTime = (video.duration * progressBar.value) / 100;
         video.currentTime = seekTime;
     });
+
+    // 🎯 监听 `change` 事件，拖动完成后继续播放视频
+    progressBar.addEventListener("change", function () {
+        isDragging = false; // 结束拖动
+    });
+});
 
     // ✅ 修正搜索按钮的问题
     const searchContainer = document.getElementById("searchContainer");
@@ -433,7 +449,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <div></div>
 </div>
 
-<input type="range" id="progressBar" value="0" min="0" max="100" step="0.1">
 
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
