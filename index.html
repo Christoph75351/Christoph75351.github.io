@@ -64,6 +64,13 @@
         <p id="tags">#标签</p>
     </div>
 
+<div id="searchContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; z-index: 1000;">
+    <input type="text" id="searchInput" placeholder="搜索用户名或标签">
+    <button id="searchButton">搜索</button>
+</div>
+
+
    <script>
 let videos = [];
 let filteredVideos = []; // 存储搜索结果
@@ -139,14 +146,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchContainer = document.getElementById("searchContainer");
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
+    const searchIcon = document.getElementById("searchIcon");
 
-    // 搜索按钮点击时显示搜索框
-    document.getElementById("searchIcon").addEventListener("click", function () {
+    if (!searchContainer || !searchInput || !searchButton || !searchIcon) {
+        console.error("❌ 搜索框或按钮未正确加载，请检查 HTML 结构");
+        return;
+    }
+
+    // 点击底部🔍按钮，显示搜索框
+    searchIcon.addEventListener("click", function () {
+        console.log("🔍 按钮被点击，尝试显示搜索框");
         searchContainer.style.display = "block";
         searchInput.focus();
     });
 
-    // 监听回车键触发搜索
+    // 监听 Enter 触发搜索
     searchInput.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             searchVideos();
@@ -154,18 +168,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 关闭搜索框函数
+    // 点击搜索按钮触发搜索
+    searchButton.addEventListener("click", function () {
+        searchVideos();
+        closeSearch();
+    });
+
+    // 关闭搜索框
     function closeSearch() {
         searchContainer.style.display = "none";
     }
 
     // 点击搜索框外部关闭
     document.addEventListener("click", function (event) {
-        if (!searchContainer.contains(event.target) && event.target !== searchInput) {
+        if (!searchContainer.contains(event.target) && event.target !== searchIcon) {
             closeSearch();
         }
     });
 });
+
 
 window.onload = loadVideos;
 
