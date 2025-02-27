@@ -354,17 +354,24 @@ window.addEventListener("orientationchange", function () {
 });
 
 let hideTimeout;
+let isUIVisible = true; // 追踪 UI 显示状态
 
 function showControls() {
-    ["bottomBar", "menu", "progressBar"].forEach(id => {
-        document.getElementById(id).classList.remove("hidden");
-    });
+    if (!isUIVisible) {
+        ["bottomBar", "menu", "progressBar"].forEach(id => {
+            document.getElementById(id).classList.remove("hidden");
+        });
+        isUIVisible = true;
+    }
 }
 
 function hideControls() {
-    ["bottomBar", "menu", "progressBar"].forEach(id => {
-        document.getElementById(id).classList.add("hidden");
-    });
+    if (isUIVisible) {
+        ["bottomBar", "menu", "progressBar"].forEach(id => {
+            document.getElementById(id).classList.add("hidden");
+        });
+        isUIVisible = false;
+    }
 }
 
 function resetHideTimer() {
@@ -376,10 +383,10 @@ function resetHideTimer() {
     }, 3000); // 3 秒后隐藏
 }
 
-// 页面加载时，显示 UI，并立即开始监听交互
+// 页面加载时，显示 UI，并立即启动隐藏计时器
 document.addEventListener("DOMContentLoaded", function () {
-    showControls(); // ✅ 确保页面加载时 UI 可见
-    resetHideTimer(); // ✅ 立即启动隐藏计时器
+    showControls();
+    resetHideTimer();
 });
 
 // 监听用户交互（鼠标移动 / 触摸屏幕），重置隐藏计时器
