@@ -386,6 +386,7 @@ function hideUI() {
 // 重置隐藏计时器
 function resetHideTimer() {
     clearTimeout(hideUITimer);
+    console.log("⌛ 重置隐藏计时器，3 秒后执行 hideUI()");
     hideUITimer = setTimeout(() => {
         console.log("⏳ 3 秒无操作，执行 hideUI()");
         hideUI();
@@ -395,8 +396,9 @@ function resetHideTimer() {
 // 监听用户交互事件
 let lastMouseMoveTime = Date.now();
 document.addEventListener("mousemove", function () {
-    if (Date.now() - lastMouseMoveTime > 500) {
+    if (Date.now() - lastMouseMoveTime > 2000) { // **改成 2 秒触发一次**
         lastMouseMoveTime = Date.now();
+        console.log("🖱️ 鼠标移动，显示 UI 并重置计时器");
         showUI();
     }
 });
