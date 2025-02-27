@@ -246,8 +246,8 @@ document.addEventListener("touchend", (evt) => {
 }, false);
 
 document.addEventListener("DOMContentLoaded", function () {
-   // loadVideos(); // ✅ 只调用一次 loadVideos()
-    console.log("✅ 页面已加载，开始监听视频进度");
+    loadVideos(); // ✅ 只调用一次 loadVideos()
+    
 const video = document.getElementById("video");
 const progressBar = document.getElementById("progressBar");
 
