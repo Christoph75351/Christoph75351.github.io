@@ -358,12 +358,16 @@ let isUIVisible = true; // 追踪 UI 状态
 
 // 显示 UI
 function showUI() {
-    if (!isUIVisible) {
-        uiElements.forEach(el => el.classList.remove("hidden"));
-        isUIVisible = true;
-    }
-    resetUITimer();
+    console.log("👀 UI 重新显示...");
+    document.getElementById("bottomBar").style.opacity = "1";
+    document.getElementById("menu").style.opacity = "1";
+    document.getElementById("progressBar").style.opacity = "1";
+    document.getElementById("bottomBar").style.visibility = "visible";
+    document.getElementById("menu").style.visibility = "visible";
+    document.getElementById("progressBar").style.visibility = "visible";
+    resetHideTimer();
 }
+
 
 // 隐藏 UI
 function hideUI() {
