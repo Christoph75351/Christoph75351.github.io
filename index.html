@@ -115,8 +115,10 @@ video {
 .hidden {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* ✅ 确保隐藏时不可点击 */
+    pointer-events: none; /* ✅ 确保隐藏时 UI 不能被点击 */
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
+
 
     </style>
 </head>
@@ -358,24 +360,28 @@ window.addEventListener("orientationchange", function () {
 });
 
 
-let uiElements = document.querySelectorAll(".controls, .menu-icon, .progress-bar"); // 需要隐藏的 UI 元素
-let hideUITimer; // 计时器变量
+let uiElements = document.querySelectorAll("#bottomBar, #menu, #progressBar"); // ✅ 直接选择正确的 ID
+let hideUITimer;
 
 // 隐藏 UI
 function hideUI() {
-    uiElements.forEach(el => el.style.opacity = "0"); // 设置透明度为 0
+    uiElements.forEach(el => {
+        el.classList.add("hidden"); // ✅ 通过 CSS 进行隐藏
+    });
 }
 
 // 显示 UI
 function showUI() {
-    uiElements.forEach(el => el.style.opacity = "1"); // 重新显示
-    resetUITimer(); // 重新计时
+    uiElements.forEach(el => {
+        el.classList.remove("hidden"); // ✅ 重新显示 UI
+    });
+    resetUITimer(); // ✅ 重新计时
 }
 
 // 重置 UI 计时器
 function resetUITimer() {
-    clearTimeout(hideUITimer); // 清除旧的计时器
-    hideUITimer = setTimeout(hideUI, 3000); // 3 秒后隐藏 UI
+    clearTimeout(hideUITimer); // ✅ 清除旧的计时器
+    hideUITimer = setTimeout(hideUI, 3000); // ✅ 3 秒后隐藏 UI
 }
 
 // 监听用户交互事件
@@ -385,6 +391,7 @@ document.addEventListener("click", showUI);
 
 // 初始计时，等待自动隐藏
 resetUITimer();
+
 
 
 
