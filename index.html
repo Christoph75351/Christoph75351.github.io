@@ -301,6 +301,33 @@ function toggleSound() {
     video.muted = !video.muted;
 }
 
+function toggleFullscreen() {
+    let videoContainer = document.documentElement; // 获取整个 HTML 页面
+
+    if (!document.fullscreenElement) {
+        if (videoContainer.requestFullscreen) {
+            videoContainer.requestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) { // 兼容 Firefox
+            videoContainer.mozRequestFullScreen();
+        } else if (videoContainer.webkitRequestFullscreen) { // 兼容 Chrome, Safari, Edge
+            videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) { // 兼容 IE
+            videoContainer.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
+
 
 </script>
 
@@ -309,6 +336,7 @@ function toggleSound() {
         <button id="searchIcon">🔍</button>
         <button onclick="togglePlay()">⏸️</button>
         <button onclick="toggleSound()">🔊</button>
+        <button onclick="toggleFullscreen()">⛶</button>
     </div>
     <div class="menu" onclick="toggleMenu()">
         <div></div>
