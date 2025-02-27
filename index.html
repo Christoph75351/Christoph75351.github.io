@@ -107,8 +107,12 @@ video {
 
         
 .hidden {
-    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
+
 
 
 
@@ -359,8 +363,19 @@ let isUIVisible = true; // 追踪 UI 状态
 
 // 显示 UI
 let hideUITimer;
-let lastInteractionTime = Date.now(); // 记录上次交互时间
+let lastInteractionTime = Date.now();
 
+// 显示 UI
+function showUI() {
+    console.log("👀 UI 重新显示...");
+    document.getElementById("bottomBar").classList.remove("hidden");
+    document.getElementById("menu").classList.remove("hidden");
+    document.getElementById("progressBar").classList.remove("hidden");
+    lastInteractionTime = Date.now();
+    resetHideTimer();
+}
+
+// 隐藏 UI
 function hideUI() {
     console.log("⏳ UI 正在隐藏...");
     document.getElementById("bottomBar").classList.add("hidden");
@@ -368,36 +383,33 @@ function hideUI() {
     document.getElementById("progressBar").classList.add("hidden");
 }
 
-function showUI() {
-    console.log("👀 UI 重新显示...");
-    document.getElementById("bottomBar").classList.remove("hidden");
-    document.getElementById("menu").classList.remove("hidden");
-    document.getElementById("progressBar").classList.remove("hidden");
-    lastInteractionTime = Date.now(); // 更新交互时间
-}
-
-
-function checkAutoHide() {
-    if (Date.now() - lastInteractionTime > 3000) { // 3 秒无操作
+// 重置隐藏计时器
+function resetHideTimer() {
+    clearTimeout(hideUITimer);
+    hideUITimer = setTimeout(() => {
+        console.log("⏳ 3 秒无操作，执行 hideUI()");
         hideUI();
-    }
-    requestAnimationFrame(checkAutoHide); // 持续检查
+    }, 3000);
 }
 
 // 监听用户交互事件
-["mousemove", "touchstart", "click"].forEach(event => {
-    document.addEventListener(event, function () {
-        console.log("👆 用户交互，重置隐藏计时器");
+let lastMouseMoveTime = Date.now();
+document.addEventListener("mousemove", function () {
+    if (Date.now() - lastMouseMoveTime > 500) {
+        lastMouseMoveTime = Date.now();
         showUI();
-    });
+    }
 });
 
-// 页面加载后启动 UI 监测
+document.addEventListener("touchstart", showUI);
+document.addEventListener("click", showUI);
+
+// 页面加载后启动隐藏计时器
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ 页面已加载，开始监听 UI 自动隐藏");
     showUI();
-    requestAnimationFrame(checkAutoHide); // 启动隐藏检测
 });
+
 
 
 
