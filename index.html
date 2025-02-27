@@ -107,11 +107,9 @@ video {
 
         
 .hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none; /* ✅ UI 隐藏后不能点击 */
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    display: none !important;
 }
+
 
 
 
@@ -360,34 +358,30 @@ let uiElements = document.querySelectorAll("#bottomBar, #menu, #progressBar");
 let isUIVisible = true; // 追踪 UI 状态
 
 // 显示 UI
-let hideUITimer; // 计时器，只定义一次
+let hideUITimer;
+let lastInteractionTime = Date.now(); // 记录上次交互时间
+
+function hideUI() {
+    console.log("⏳ UI 正在隐藏...");
+    document.getElementById("bottomBar").classList.add("hidden");
+    document.getElementById("menu").classList.add("hidden");
+    document.getElementById("progressBar").classList.add("hidden");
+}
 
 function showUI() {
     console.log("👀 UI 重新显示...");
-    document.getElementById("bottomBar").style.opacity = "1";
-    document.getElementById("menu").style.opacity = "1";
-    document.getElementById("progressBar").style.opacity = "1";
-    document.getElementById("bottomBar").style.visibility = "visible";
-    document.getElementById("menu").style.visibility = "visible";
-    document.getElementById("progressBar").style.visibility = "visible";
-    resetHideTimer();
+    document.getElementById("bottomBar").classList.remove("hidden");
+    document.getElementById("menu").classList.remove("hidden");
+    document.getElementById("progressBar").classList.remove("hidden");
+    lastInteractionTime = Date.now(); // 更新交互时间
 }
 
-// 隐藏 UI
-function hideUI() {
-    console.log("⏳ UI 正在隐藏..."); // ✅ 调试用，看看是否执行
-    document.getElementById("bottomBar").style.opacity = "0";
-    document.getElementById("menu").style.opacity = "0";
-    document.getElementById("progressBar").style.opacity = "0";
-    document.getElementById("bottomBar").style.visibility = "hidden";
-    document.getElementById("menu").style.visibility = "hidden";
-    document.getElementById("progressBar").style.visibility = "hidden";
-}
 
-// 重置 UI 计时器
-function resetHideTimer() {
-    clearTimeout(hideUITimer);
-    hideUITimer = setTimeout(hideUI, 3000); // ✅ 3 秒后隐藏 UI
+function checkAutoHide() {
+    if (Date.now() - lastInteractionTime > 3000) { // 3 秒无操作
+        hideUI();
+    }
+    requestAnimationFrame(checkAutoHide); // 持续检查
 }
 
 // 监听用户交互事件
@@ -398,15 +392,13 @@ function resetHideTimer() {
     });
 });
 
-// 页面加载时，确保 UI 可见，并开始监听
+// 页面加载后启动 UI 监测
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ 页面已加载，尝试执行 showUI()");
-    if (document.getElementById("menu")) {
-        showUI();
-    } else {
-        console.error("❌ `#menu` 未正确加载，请检查 HTML");
-    }
+    console.log("✅ 页面已加载，开始监听 UI 自动隐藏");
+    showUI();
+    requestAnimationFrame(checkAutoHide); // 启动隐藏检测
 });
+
 
 
 
