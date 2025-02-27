@@ -232,8 +232,15 @@ function goHome() {
 // 右上角菜单切换
 function toggleMenu() {
     let nav = document.getElementById("nav");
-    nav.classList.toggle("active");
+    
+    // ✅ 切换 active 状态，控制菜单显示/隐藏
+    if (nav.classList.contains("active")) {
+        nav.classList.remove("active");
+    } else {
+        nav.classList.add("active");
+    }
 }
+
 
 // PC 端鼠标滚轮事件
 document.addEventListener("wheel", (event) => {
