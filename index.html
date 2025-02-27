@@ -410,6 +410,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const video = document.getElementById("video");
+
+    // ✅ 点击屏幕播放 / 暂停
+    video.addEventListener("click", function () {
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    });
+
+    console.log("🎥 已启用点击播放/暂停功能");
+});
 
 
 
