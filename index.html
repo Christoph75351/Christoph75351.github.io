@@ -201,10 +201,28 @@ document.addEventListener("touchend", (evt) => {
 }, false);
 
 document.addEventListener("DOMContentLoaded", function () {
+    loadVideos(); // ✅ 只调用一次 loadVideos()
+
+    const progressBar = document.getElementById("progressBar");
+    const video = document.getElementById("video");
+
+    // 监听视频播放进度，更新进度条
+    video.addEventListener("timeupdate", function () {
+        let progress = (video.currentTime / video.duration) * 100;
+        progressBar.value = progress;
+    });
+
+    // 监听进度条拖动，跳转到对应时间
+    progressBar.addEventListener("input", function () {
+        let seekTime = (progressBar.value / 100) * video.duration;
+        video.currentTime = seekTime;
+    });
+
+    // ✅ 修正搜索按钮的问题
     const searchContainer = document.getElementById("searchContainer");
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
-    const searchIcon = document.getElementById("searchIcon");
+    const searchIcon = document.getElementById("searchIcon"); // ✅ 这里定义，确保 HTML 加载完成后获取
 
     if (!searchContainer || !searchInput || !searchButton || !searchIcon) {
         console.error("❌ 搜索框或按钮未正确加载，请检查 HTML 结构");
@@ -261,28 +279,6 @@ function toggleSound() {
     video.muted = !video.muted;
 }
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    loadVideos(); // ⬅️ 这里调用 loadVideos，确保进度条功能不会失效
-
-    const progressBar = document.getElementById("progressBar");
-    const video = document.getElementById("video");
-
-    video.addEventListener("timeupdate", function () {
-        let progress = (video.currentTime / video.duration) * 100;
-        progressBar.value = progress;
-    });
-
-    progressBar.addEventListener("input", function () {
-        let seekTime = (progressBar.value / 100) * video.duration;
-        video.currentTime = seekTime;
-    });
-});
-
-
-
-
-window.onload = loadVideos; // ⬅️ 确保 `togglePlay` 代码放在 `window.onload` 之前
 
 </script>
 
