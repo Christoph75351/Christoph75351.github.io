@@ -55,25 +55,33 @@ video {
     display: block;
 }
 
-#searchContainer {
+  #searchContainer {
     position: fixed;
-    top: 50%;
+    top: 35%; /* 向上调整弹出搜索框位置 */
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.8);
     padding: 15px;
     border-radius: 10px;
-    display: none; /* 默认隐藏 */
-    z-index: 1000;
-}
-#searchInput {
-    width: 200px;
-    padding: 5px;
-}
-#searchButton {
-    margin-left: 5px;
+    display: none;
+  }
+
+  /* 增大搜索按钮尺寸并添加渐变 */
+  #searchButton {
+    width: 120px;
+    height: 45px;
+    font-size: 18px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-}
+    transition: all 0.3s ease;
+  }
+
+  #searchButton:hover {
+    background: linear-gradient(45deg, #ff4b2b, #ff416c);
+  }
 
  @media (max-width: 768px) {
     video {
