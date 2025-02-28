@@ -137,33 +137,29 @@ video {
 }
 
 
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);/* 联系我们修改 */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white; /* 联系我们修改 */
-    color: black;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.close {
-    position: absolute;/* 联系我们修改 */
-    top: 10px;
-    right: 20px;
-    font-size: 30px;
-    cursor: pointer;
-}
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: black; color: white; }/* 联系我们 */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: white; 
+            color: black; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;/* 联系我们 */
+        }
 
 
 
@@ -492,14 +488,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // 联系我们控制模态框
-function openContact() {
-    document.getElementById("contactModal").style.display = "flex";
-}
-
-function closeContact() {
-    document.getElementById("contactModal").style.display = "none";
-}
-
+        function openModal() {
+            document.getElementById('contactModal').style.display = 'block';
+        }
+        function closeModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
 
 
 
@@ -523,14 +517,14 @@ function closeContact() {
 </div>
 
 <!-- 📌 联系我们模态框 -->
-<div id="contactModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeContact()">&times;</span>
-        <h2>联系我们</h2>
-        <p>📩 邮箱：example@email.com</p>
-        <p>📞 电话：+86 123-4567-8901</p>
+    <div class="modal" id="contactModal">
+        <div class="modal-header">
+            <h3>联系我们</h3>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+        </div>
+        <p>📧 邮箱: example@email.com</p>
+        <p>📞 电话: +86 123-4567-8901</p>
     </div>
-</div>
 
 
     <div class="nav" id="nav">
