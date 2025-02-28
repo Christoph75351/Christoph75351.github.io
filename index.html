@@ -500,10 +500,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function toggleTagMenu(event) {
-    event.stopPropagation(); // 防止事件冒泡
+    if (event) {
+        event.stopPropagation(); // ✅ 只有 event 存在时才执行
+    }
     let menu = document.getElementById("tagMenu");
     menu.style.right = menu.style.right === "0px" ? "-35%" : "0px";
 }
+
 
 // 📌 加载标签列表
 function loadTags() {
