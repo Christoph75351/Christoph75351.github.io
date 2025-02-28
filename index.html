@@ -138,7 +138,7 @@ video {
 
 
 body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: black; color: white; }/* 联系我们 */
-      .modal {
+.modal {
     display: none;
     position: fixed;
     top: 50%;
@@ -150,6 +150,8 @@ body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: black;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     min-width: 300px;
+    max-width: 90%;  /* 适应不同屏幕 */
+    position: relative; /* 让关闭按钮相对模态框定位 */
 }
 
 .modal-header {
@@ -163,9 +165,12 @@ body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: black;
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    background: none;
+    border: none;
+    color: black;
 }
 
 
