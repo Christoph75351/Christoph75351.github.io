@@ -136,7 +136,43 @@ video {
     display: none !important;
 }
 
+/* 📌 右侧标签菜单 UI */
+.tag-menu {
+    position: fixed;
+    top: 0;
+    right: -35%; /* 初始隐藏 */
+    width: 30%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
 
+.tag-option {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    background: #333;
+    cursor: pointer;
+    text-align: center;
+}
+
+.tag-option:hover {
+    background: #555;
+}
+
+/* 选中标签显示 */
+#selectedTagDisplay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    display: none;
+}
 
 
     </style>
@@ -462,6 +498,49 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("🎥 已启用点击播放/暂停功能");
 });
 
+function toggleTagMenu(event) {
+    event.stopPropagation(); // 防止事件冒泡
+    let menu = document.getElementById("tagMenu");
+    menu.style.right = menu.style.right === "0px" ? "-35%" : "0px";
+}
+
+// 📌 加载标签列表
+function loadTags() {
+    let tagSet = new Set();
+    videos.forEach(video => video.tags.forEach(tag => tagSet.add(tag)));
+
+    let tagList = document.getElementById("tagList");
+    tagList.innerHTML = ""; // 清空旧数据
+
+    tagSet.forEach(tag => {
+        let div = document.createElement("div");
+        div.className = "tag-option";
+        div.innerText = tag;
+        div.onclick = () => filterVideos(tag);
+        tagList.appendChild(div);
+    });
+}
+
+// 📌 选择标签后筛选视频
+function filterVideos(tag) {
+    document.getElementById("selectedTagDisplay").innerText = tag;
+    document.getElementById("selectedTagDisplay").style.display = "block";
+
+    setTimeout(() => {
+        document.getElementById("selectedTagDisplay").style.display = "none";
+    }, 3000);
+
+    if (tag === "全部") {
+        filteredVideos = [...videos]; // 显示所有视频
+    } else {
+        filteredVideos = videos.filter(video => video.tags.includes(tag));
+    }
+
+    playRandomVideo(); // 切换视频
+    toggleTagMenu(); // 关闭标签菜单
+}
+
+document.addEventListener("DOMContentLoaded", loadTags);
 
 
 
@@ -487,7 +566,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
-        <a href="#">标签</a>
+        <a href="#" onclick="toggleTagMenu(event)">标签</a>
         <a href="contact.html">联系我们</a>
         <a href="gghz.html">广告合作</a>
         <a href="cjwt.html">常问问题</a>
@@ -496,6 +575,14 @@ document.addEventListener("DOMContentLoaded", function () {
         <a href="yszc.html">隐私政策</a>
         <a href="fuwutiaokuan.html">服务条款</a>
     </div>
-   
+
+<!-- 📌 右侧标签选择 UI -->
+<div id="tagMenu" class="tag-menu">
+    <h3>选择标签</h3>
+    <div class="tag-option" onclick="filterVideos('全部')">全部</div>
+    <div id="tagList"></div>
+</div>
+
+
 </body>
 </html>
