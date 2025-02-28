@@ -204,6 +204,7 @@ async function loadVideos() {
         let response = await fetch('videos/videos.json');
         videos = await response.json();
         filteredVideos = [...videos]; // 默认播放所有视频
+        loadTags(); // ✅ 确保标签菜单加载
         playRandomVideo();
     } catch (error) {
         console.error("加载视频列表失败:", error);
@@ -533,7 +534,7 @@ function filterVideos(tag) {
     if (tag === "全部") {
         filteredVideos = [...videos]; // 显示所有视频
     } else {
-        filteredVideos = videos.filter(video => video.tags.includes(tag));
+        filteredVideos = videos.filter(video => video.tags.some(t => t === tag));
     }
 
     playRandomVideo(); // 切换视频
@@ -566,7 +567,7 @@ document.addEventListener("DOMContentLoaded", loadTags);
 
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
-        <a href="#" onclick="toggleTagMenu(event)">标签</a>
+        <a href="#" onclick="toggleTagMenu()">标签</a>
         <a href="contact.html">联系我们</a>
         <a href="gghz.html">广告合作</a>
         <a href="cjwt.html">常问问题</a>
