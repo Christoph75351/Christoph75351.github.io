@@ -488,12 +488,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // 联系我们控制模态框
-        function openModal() {
-            document.getElementById('contactModal').style.display = 'block';
-        }
-        function closeModal() {
-            document.getElementById('contactModal').style.display = 'none';
-        }
+function openModal() {
+    let modal = document.getElementById('contactModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log("📩 '联系我们' 模态框已打开");
+    } else {
+        console.error("❌ 未找到 #contactModal，请检查 HTML 结构");
+    }
+}
+
+function closeModal() {
+    let modal = document.getElementById('contactModal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log("📩 '联系我们' 模态框已关闭");
+    }
+}
+
 
 
 
@@ -517,20 +529,21 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <!-- 📌 联系我们模态框 -->
-    <div class="modal" id="contactModal">
-        <div class="modal-header">
-            <h3>联系我们</h3>
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-        </div>
-        <p>📧 邮箱: example@email.com</p>
-        <p>📞 电话: +86 123-4567-8901</p>
+<div class="modal" id="contactModal" style="display: none;">
+    <div class="modal-header">
+        <h3>联系我们</h3>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
     </div>
+    <p>📧 邮箱: example@email.com</p>
+    <p>📞 电话: +86 123-4567-8901</p>
+</div>
+
 
 
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
         <a href="#">标签</a>
-        <a href="#" onclick="openContact()">联系我们</a>
+        <a href="#" onclick="openModal()">联系我们</a>
         <a href="#">服务条款</a>
     </div>
    
