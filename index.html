@@ -41,7 +41,7 @@ video {
         .video-info { position: absolute; bottom: 70px; left: 10px; }
         .video-info p { margin: 5px 0; }
         
-        .nav {
+.nav {
     display: none;
     position: fixed;
     top: 0;
@@ -50,10 +50,13 @@ video {
     height: 100vh;
     background: rgba(0, 0, 0, 0.8);
     padding: 20px;
+    transition: transform 0.3s ease-in-out;
 }
+
 .nav.active {
     display: block;
 }
+
 
   #searchContainer {
     position: fixed;
@@ -232,14 +235,19 @@ function goHome() {
 // 右上角菜单切换
 function toggleMenu() {
     let nav = document.getElementById("nav");
-    
-    // ✅ 切换 active 状态，控制菜单显示/隐藏
-    if (nav.classList.contains("active")) {
-        nav.classList.remove("active");
-    } else {
-        nav.classList.add("active");
-    }
+    let menu = document.getElementById("menu");
+
+    // ✅ 切换 active 状态
+    nav.classList.toggle("active");
+
+    // ✅ 监听点击外部关闭菜单
+    document.addEventListener("click", function (event) {
+        if (!nav.contains(event.target) && !menu.contains(event.target)) {
+            nav.classList.remove("active");
+        }
+    });
 }
+
 
 
 // PC 端鼠标滚轮事件
