@@ -235,18 +235,19 @@ function goHome() {
 // 右上角菜单切换
 function toggleMenu() {
     let nav = document.getElementById("nav");
-    let menu = document.getElementById("menu");
 
     // ✅ 切换 active 状态
     nav.classList.toggle("active");
 
     // ✅ 监听点击外部关闭菜单
-    document.addEventListener("click", function (event) {
-        if (!nav.contains(event.target) && !menu.contains(event.target)) {
+    document.addEventListener("click", function closeMenu(event) {
+        if (!nav.contains(event.target) && event.target.id !== "menu") {
             nav.classList.remove("active");
+            document.removeEventListener("click", closeMenu); // ✅ 只添加一次监听器，防止重复触发
         }
-    });
+    }, { once: true }); // ✅ 确保 `click` 事件只触发一次，避免重复添加监听器
 }
+
 
 
 
