@@ -493,36 +493,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 联系我们控制模态框
 function openContact() {
-    let modal = document.getElementById("contactModal");
-    if (modal) {
-        modal.style.display = "flex"; // ✅ 显示模态框
-        console.log("📩 '联系我们' 模态框已打开");
-    } else {
-        console.error("❌ 未找到 #contactModal，请检查 HTML 结构");
-    }
+    document.getElementById("contactModal").style.display = "flex";
 }
 
-
-// ✅ 关闭模态框
 function closeContact() {
-    let modal = document.getElementById("contactModal");
-    if (modal) {
-        modal.style.display = "none";
-        console.log("📩 '联系我们' 模态框已关闭");
-    }
+    document.getElementById("contactModal").style.display = "none";
 }
 
-
-// ✅ 点击外部区域时，模态框自动关闭
-document.addEventListener("click", function (event) {
-    let modal = document.getElementById("contactModal");
-    let modalContent = document.querySelector(".modal-content");
-
-    // ✅ 只有模态框处于显示状态，并且点击的不是内容区域，才会关闭
-    if (modal && modal.style.display === "flex" && !modalContent.contains(event.target)) {
-        closeContact();
-    }
-});
 
 
 
@@ -559,7 +536,7 @@ document.addEventListener("click", function (event) {
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
         <a href="#">标签</a>
-        <a id="contactLink" href="#">联系我们</a>
+        <a href="#" onclick="openContact()">联系我们</a>
         <a href="#">服务条款</a>
     </div>
    
