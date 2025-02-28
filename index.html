@@ -500,6 +500,17 @@ function closeContact() {
     document.getElementById("contactModal").style.display = "none";
 }
 
+// ✅ 点击外部区域关闭模态框
+document.addEventListener("click", function (event) {
+    let modal = document.getElementById("contactModal");
+    let modalContent = document.querySelector(".modal-content");
+
+    if (modal.style.display === "flex" && !modalContent.contains(event.target)) {
+        closeContact();
+    }
+});
+
+
 
 
 </script>
