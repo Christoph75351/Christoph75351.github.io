@@ -137,34 +137,6 @@ video {
 }
 
 
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);/* 联系我们修改 */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white; /* 联系我们修改 */
-    color: black;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.close {
-    position: absolute;/* 联系我们修改 */
-    top: 10px;
-    right: 20px;
-    font-size: 30px;
-    cursor: pointer;
-}
-
 
 
     </style>
@@ -491,15 +463,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-    // 联系我们控制模态框
-function openContact() {
-    document.getElementById("contactModal").style.display = "flex";
-}
-
-function closeContact() {
-    document.getElementById("contactModal").style.display = "none";
-}
-
 
 
 
@@ -522,21 +485,11 @@ function closeContact() {
     <div></div>
 </div>
 
-<!-- 📌 联系我们模态框 -->
-<div id="contactModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeContact()">&times;</span>
-        <h2>联系我们</h2>
-        <p>📩 邮箱：example@email.com</p>
-        <p>📞 电话：+86 123-4567-8901</p>
-    </div>
-</div>
-
 
     <div class="nav" id="nav">
         <a href="index.html">首页</a>
         <a href="#">标签</a>
-        <a href="#" onclick="openContact()">联系我们</a>
+        <a href="contact.html">联系我们</a>
         <a href="#">服务条款</a>
     </div>
    
