@@ -494,14 +494,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // 联系我们控制模态框
 function openContact() {
     let modal = document.getElementById("contactModal");
-    modal.style.display = "flex"; // ✅ 显示模态框
+    if (modal) {
+        modal.style.display = "flex"; // ✅ 显示模态框
+        console.log("📩 '联系我们' 模态框已打开");
+    } else {
+        console.error("❌ 未找到 #contactModal，请检查 HTML 结构");
+    }
 }
+
 
 // ✅ 关闭模态框
 function closeContact() {
     let modal = document.getElementById("contactModal");
-    modal.style.display = "none"; // ✅ 隐藏模态框
+    if (modal) {
+        modal.style.display = "none";
+        console.log("📩 '联系我们' 模态框已关闭");
+    }
 }
+
 
 // ✅ 点击外部区域时，模态框自动关闭
 document.addEventListener("click", function (event) {
@@ -509,10 +519,11 @@ document.addEventListener("click", function (event) {
     let modalContent = document.querySelector(".modal-content");
 
     // ✅ 只有模态框处于显示状态，并且点击的不是内容区域，才会关闭
-    if (modal.style.display === "flex" && !modalContent.contains(event.target)) {
+    if (modal && modal.style.display === "flex" && !modalContent.contains(event.target)) {
         closeContact();
     }
 });
+
 
 
 
