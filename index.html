@@ -185,7 +185,7 @@ video {
 </div>
 <div id="selectedTagDisplay" style="position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px 10px; display: none;">
 </div>
-<div id="videoList" style="position: fixed; bottom: 80px; width: 100%; text-align: center; color: white;"></div>
+
 
     <div class="video-info">
         <p id="username">@用户名</p>
@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const video = document.getElementById("video");
-   fetchVideosFromAPI();
+
     // ✅ 点击屏幕播放 / 暂停
     video.addEventListener("click", function () {
         if (video.paused) {
@@ -593,52 +593,6 @@ function closeAd() {
 // 监听滑动事件
 document.addEventListener("wheel", onVideoSwipe); // PC 端鼠标滚轮
 document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
-
-// 前端自动获取 API
-async function fetchVideosFromAPI() {
-    let apiUrl = "https://dldldl.neidhartchristoph25.workers.dev"; // API 地址
-    try {
-        let response = await fetch(apiUrl);
-        let data = await response.json();
-
-        // ✅ 解析 API 返回的 `list` 数组，并转换为你的 `videos` 格式
-        videos = data.list.map(v => ({
-            title: v.vod_name,           // API 里的 `vod_name`
-            url: v.vod_play_url.split("$")[1] || v.vod_play_url, // 解析视频 URL
-            tags: v.vod_class ? v.vod_class.split(",") : [],
-            username: v.vod_actor || "未知用户" // API 里的 `vod_actor`
-        }));
-
-        console.log("✅ 获取的视频数据:", videos);
-        renderVideos(videos);
-    } catch (error) {
-        console.error("❌ 获取视频失败:", error);
-    }
-}
-
-
-function renderVideos(videos) {
-    let videoContainer = document.getElementById("videoList");
-    if (!videoContainer) {
-        console.error("❌ `#videoList` 容器未找到，请检查 HTML 代码");
-        return;
-    }
-    
-    videoContainer.innerHTML = ""; // 清空旧内容
-
-    videos.forEach(video => {
-        let div = document.createElement("div");
-        div.innerHTML = `
-            <h3>${video.title}</h3>
-            <video src="${video.url}" controls></video>
-        `;
-        videoContainer.appendChild(div);
-    });
-
-    console.log("✅ 视频已渲染到页面");
-}
-
-
 
 
 
