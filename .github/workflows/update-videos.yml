@@ -24,8 +24,9 @@ jobs:
       - name: 获取视频数据
         run: |
           curl -s "https://slapibf.com/api.php/provide/vod/?ac=list" -o response.json
+          echo "API Response:"
           cat response.json
-          cat response.json | jq '[.list[] | {videoUrl: (.vod_play_url | split("$") | last), username: .vod_actor, tags: (.vod_class | split(","))}]' > videos.json
+
 
       - name: 提交更新
         run: |
