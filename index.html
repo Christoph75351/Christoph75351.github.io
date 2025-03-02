@@ -570,7 +570,7 @@ let slideCount = 0;
 function onVideoSwipe() {
     slideCount++;
 
-    if (slideCount >= Math.floor(Math.random() * 2) + 3) { // 3-4 次滑动后触发广告
+    if (slideCount >= Math.floor(Math.random() * 2) + 5) { // 3-4 次滑动后触发广告
         showFloatingAd();
         slideCount = 0; // 重置计数器
     }
