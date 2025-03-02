@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const video = document.getElementById("video");
-
+   fetchVideosFromAPI();
     // ✅ 点击屏幕播放 / 暂停
     video.addEventListener("click", function () {
         if (video.paused) {
@@ -601,35 +601,42 @@ async function fetchVideosFromAPI() {
         let response = await fetch(apiUrl);
         let data = await response.json();
 
+        // ✅ 解析 API 返回的 `list` 数组，并转换为你的 `videos` 格式
         videos = data.list.map(v => ({
-            title: v.vod_name,
-            url: v.vod_play_url, // 可能是 M3U8 直链
+            title: v.vod_name,           // API 里的 `vod_name`
+            url: v.vod_play_url.split("$")[1] || v.vod_play_url, // 解析视频 URL
             tags: v.vod_class ? v.vod_class.split(",") : [],
-            username: v.vod_actor || "未知用户" // 部分 API 提供用户名
+            username: v.vod_actor || "未知用户" // API 里的 `vod_actor`
         }));
 
-        console.log("获取的视频数据:", videos);
+        console.log("✅ 获取的视频数据:", videos);
         renderVideos(videos);
     } catch (error) {
         console.error("❌ 获取视频失败:", error);
     }
 }
 
+
 function renderVideos(videos) {
     let videoContainer = document.getElementById("videoList");
+    if (!videoContainer) {
+        console.error("❌ `#videoList` 容器未找到，请检查 HTML 代码");
+        return;
+    }
+    
     videoContainer.innerHTML = ""; // 清空旧内容
 
     videos.forEach(video => {
         let div = document.createElement("div");
-        div.innerHTML = `<h3>${video.title}</h3>
-                         <video src="${video.url}" controls></video>`;
+        div.innerHTML = `
+            <h3>${video.title}</h3>
+            <video src="${video.url}" controls></video>
+        `;
         videoContainer.appendChild(div);
     });
+
+    console.log("✅ 视频已渲染到页面");
 }
-
-// 📌 页面加载时自动获取视频数据
-fetchVideosFromAPI();
-
 
 
 
