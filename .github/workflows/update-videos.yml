@@ -27,7 +27,13 @@ jobs:
           curl -s "https://slapibf.com/api.php/provide/vod/?ac=detail&h=24" -o videos/response.json
           echo "API Response:"
           cat videos/response.json
-          jq '.' videos/response.json > videos/videos.json  # 生成到 /videos/ 目录
+          jq '.list | map({
+              vod_name: .vod_name,
+              vod_pic: .vod_pic,
+              vod_time: .vod_time,
+              vod_play_url: (.vod_play_url | split("#") | map(split("$")[1]) | .[0]),
+              type_name: .type_name
+          })' videos/response.json > videos/videos.json  # 提取正确的 M3U8 直链
 
       - name: 检查 videos.json 是否存在
         run: ls -l videos/videos.json || echo "❌ videos.json 文件不存在"
