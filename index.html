@@ -538,6 +538,12 @@ function loadTags() {
     });
 }
 
+function selectTag(tag) {
+    document.getElementById("selectedTag").innerText = tag; // ✅ 显示当前选中的标签
+    filterVideos(); // 重新筛选视频
+}
+
+       
 // 📌 选择标签后筛选视频
 function filterVideos() {
     let searchQuery = document.getElementById("searchInput").value.toLowerCase();
@@ -647,9 +653,11 @@ document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
 <!-- 📌 右侧标签选择 UI -->
 <div id="tagMenu" class="tag-menu">
     <h3>选择标签</h3>
-    <div class="tag-option" onclick="filterVideos('全部')">全部</div>
-    <div id="tagList"></div>
+<div class="tag-container">
+    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- ✅ 显示选中的标签 -->
+    <div id="tagMenu" class="tag-menu"></div>
 </div>
+
 
 <!-- 📌 底部浮动广告 -->
 <div id="floatingAd" style="
