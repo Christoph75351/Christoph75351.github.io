@@ -1,1 +1,33 @@
+name: 自动更新 videos.json
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 每天 00:00 自动更新
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  update-videos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检查 GitHub 仓库
+        uses: actions/checkout@v3
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: 获取视频数据
+        run: |
+          curl -s "https://slapibf.com/api.php/provide/vod/?ac=list" | jq '[.list[] | {videoUrl: (.vod_play_url | split("$") | last), username: .vod_actor, tags: (.vod_class | split(","))}]' > videos.json
+
+      - name: 提交更新
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add videos.json
+          git commit -m "🔄 自动更新 videos.json"
+          git push
+        continue-on-error: true
 
