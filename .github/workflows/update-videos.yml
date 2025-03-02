@@ -24,7 +24,7 @@ jobs:
       - name: 获取视频数据
         run: |
           mkdir -p videos  # 确保 /videos 目录存在
-          curl -s "https://slapibf.com/api.php/provide/vod/?ac=list" -o videos/response.json
+          curl -s "https://slapibf.com/api.php/provide/vod/?ac=detail&h=24" -o videos/response.json
           echo "API Response:"
           cat videos/response.json
           jq '.' videos/response.json > videos/videos.json  # 生成到 /videos/ 目录
