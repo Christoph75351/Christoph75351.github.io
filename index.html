@@ -539,28 +539,36 @@ function loadTags() {
 }
 
 // 📌 选择标签后筛选视频
-function filterVideos(tag) {
-    let selectedTagDisplay = document.getElementById("selectedTagDisplay");
+function filterVideos() {
+    let searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    let selectedTag = document.getElementById("selectedTag").innerText.trim(); // 选中的标签
 
-    if (selectedTagDisplay) {
-        selectedTagDisplay.innerText = tag;
-        selectedTagDisplay.style.display = "block";
+    filteredVideos = videos.filter(video => {
+        let titleMatch = video.vod_name.toLowerCase().includes(searchQuery);
+        let tagMatch = selectedTag === "全部" || video.type_name.includes(selectedTag); // ✅ 识别 type_name
 
-        setTimeout(() => {
-            selectedTagDisplay.style.display = "none";
-        }, 3000);
+        return titleMatch && tagMatch;
+    });
+
+    if (filteredVideos.length === 0) {
+        alert("未找到相关视频");
     } else {
-        console.error("❌ 未找到 #selectedTagDisplay，请检查 HTML 结构");
+        playRandomVideo(); // 播放筛选后的视频
     }
+}
 
-    if (tag === "全部") {
-        filteredVideos = [...videos]; // 显示所有视频
-    } else {
-        filteredVideos = videos.filter(video => video.tags.includes(tag));
-    }
+function generateTagMenu() {
+    let tagMenu = document.getElementById("tagMenu");
+    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))]; // ✅ 识别 type_name 作为标签
 
-    playRandomVideo(); // 切换视频
-    toggleTagMenu(); // 关闭标签菜单
+    tagMenu.innerHTML = ""; // 清空旧标签
+    uniqueTags.forEach(tag => {
+        let tagElement = document.createElement("div");
+        tagElement.classList.add("tag-item");
+        tagElement.innerText = tag;
+        tagElement.onclick = () => selectTag(tag);
+        tagMenu.appendChild(tagElement);
+    });
 }
 
 
