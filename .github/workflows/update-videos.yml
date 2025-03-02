@@ -29,7 +29,6 @@ jobs:
           cat videos/response.json
           jq '.list | map({
               vod_name: .vod_name,
-              vod_pic: .vod_pic,
               vod_time: .vod_time,
               vod_play_url: (.vod_play_url | split("#") | map(split("$")[1]) | .[0]),
               type_name: .type_name
