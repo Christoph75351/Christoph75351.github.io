@@ -14,28 +14,25 @@ jobs:
         uses: actions/checkout@v3
         
       - name: 安装 jq
-         run: sudo apt-get install -y jq
+        run: sudo apt-get install -y jq
 
       - name: 安装 Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-     - name: 获取视频数据
-  run: |
-    curl -s "https://slapibf.com/api.php/provide/vod/?ac=list" -o response.json
-    cat response.json
-    cat response.json | jq '[.list[] | {videoUrl: (.vod_play_url | split("$") | last), username: .vod_actor, tags: (.vod_class | split(","))}]' > videos.json
+      - name: 获取视频数据
+        run: |
+          curl -s "https://slapibf.com/api.php/provide/vod/?ac=list" -o response.json
+          cat response.json
+          cat response.json | jq '[.list[] | {videoUrl: (.vod_play_url | split("$") | last), username: .vod_actor, tags: (.vod_class | split(","))}]' > videos.json
 
-
-- name: 提交更新
-  run: |
-    git config --global user.name "GitHub Actions"
-    git config --global user.email "actions@github.com"
-    git add videos.json
-    git commit -m "🔄 自动更新 videos.json" || exit 0
-    git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/你的GitHub用户名/你的仓库名.git main
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
+      - name: 提交更新
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add videos.json
+          git commit -m "🔄 自动更新 videos.json" || exit 0
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/你的GitHub用户名/你的仓库名.git main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
