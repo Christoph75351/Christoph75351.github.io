@@ -187,10 +187,12 @@ video {
 </div>
 
 
-    <div class="video-info">
-        <p id="username">@用户名</p>
-        <p id="tags">#标签</p>
-    </div>
+<div class="video-info">
+    <p id="videoTitle">视频标题</p>
+    <p id="videoTime">发布时间</p>
+    <p id="videoCategory">分类</p>
+</div>
+
 
 <div id="searchContainer">
     <input type="text" id="searchInput" placeholder="搜索用户名或标签">
@@ -248,8 +250,11 @@ function playRandomVideo() {
         videoElement.play(); // ✅ 确保 MP4 也能自动播放
     }
 
-    document.getElementById("username").innerText = "@" + data.username;
-    document.getElementById("tags").innerText = data.tags.join(" ");
+let videoUrl = data.vod_play_url;
+document.getElementById("videoTitle").innerText = data.vod_name; // 视频名称
+document.getElementById("videoTime").innerText = data.vod_time;  // 发布时间
+document.getElementById("videoCategory").innerText = data.type_name; // 分类
+
 }
 
 
