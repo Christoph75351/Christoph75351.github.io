@@ -594,6 +594,45 @@ function closeAd() {
 document.addEventListener("wheel", onVideoSwipe); // PC 端鼠标滚轮
 document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
 
+// 前端自动获取 API
+async function fetchVideosFromAPI() {
+    let apiUrl = "https://slapibf.com/api.php/provide/vod/?ac=list"; // API 地址
+    try {
+        let response = await fetch(apiUrl);
+        let data = await response.json();
+
+        videos = data.list.map(v => ({
+            title: v.vod_name,
+            url: v.vod_play_url, // 可能是 M3U8 直链
+            tags: v.vod_class ? v.vod_class.split(",") : [],
+            username: v.vod_actor || "未知用户" // 部分 API 提供用户名
+        }));
+
+        console.log("获取的视频数据:", videos);
+        renderVideos(videos);
+    } catch (error) {
+        console.error("❌ 获取视频失败:", error);
+    }
+}
+
+function renderVideos(videos) {
+    let videoContainer = document.getElementById("videoList");
+    videoContainer.innerHTML = ""; // 清空旧内容
+
+    videos.forEach(video => {
+        let div = document.createElement("div");
+        div.innerHTML = `<h3>${video.title}</h3>
+                         <video src="${video.url}" controls></video>`;
+        videoContainer.appendChild(div);
+    });
+}
+
+// 📌 页面加载时自动获取视频数据
+fetchVideosFromAPI();
+
+
+
+
 
 
 </script>
