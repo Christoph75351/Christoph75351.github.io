@@ -225,7 +225,7 @@ function playRandomVideo() {
     let randomIndex = Math.floor(Math.random() * filteredVideos.length);
     let data = filteredVideos[randomIndex];
     let videoElement = document.getElementById("video");
-    let videoUrl = data.videoUrl;
+    let videoUrl = data.vod_play_url; // ✅ 这里修正 videoUrl 读取新的 `vod_play_url`
 
     console.log("正在播放视频：", videoUrl);
 
@@ -235,27 +235,32 @@ function playRandomVideo() {
         videoElement.hlsInstance = null;
     }
 
+    // ✅ 确保 M3U8 播放逻辑正确
     if (videoUrl.endsWith(".m3u8")) {
         if (Hls.isSupported()) {
             let hls = new Hls();
             hls.loadSource(videoUrl);
             hls.attachMedia(videoElement);
             videoElement.hlsInstance = hls;
+            videoElement.play(); // ✅ 确保播放
+        } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+            videoElement.src = videoUrl;
+            videoElement.play(); // ✅ 兼容 Safari 直接播放 M3U8
         } else {
             console.error("❌ 你的浏览器不支持 M3U8 播放！");
             return;
         }
     } else {
         videoElement.src = videoUrl;
-        videoElement.play(); // ✅ 确保 MP4 也能自动播放
+        videoElement.play(); // ✅ 确保 MP4 也能播放
     }
 
-let videoUrl = data.vod_play_url;
-document.getElementById("videoTitle").innerText = data.vod_name; // 视频名称
-document.getElementById("videoTime").innerText = data.vod_time;  // 发布时间
-document.getElementById("videoCategory").innerText = data.type_name; // 分类
-
+    // ✅ 更新视频信息（标题、发布时间、分类）
+    document.getElementById("videoTitle").innerText = data.vod_name;
+    document.getElementById("videoTime").innerText = data.vod_time;
+    document.getElementById("videoCategory").innerText = data.type_name;
 }
+
 
 
 
