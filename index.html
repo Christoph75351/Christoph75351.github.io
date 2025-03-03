@@ -518,11 +518,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function toggleTagMenu(event) {
     if (event) {
-        event.stopPropagation(); // ✅ 只有 event 存在时才执行
+        event.stopPropagation();
     }
     let menu = document.getElementById("tagMenu");
+    if (!menu) {
+        console.error("❌ tagMenu 未找到，请检查 HTML 结构！");
+        return;
+    }
     menu.style.right = menu.style.right === "0px" ? "-35%" : "0px";
 }
+
+
 
 
 // 📌 加载标签列表
@@ -570,20 +576,24 @@ function filterVideos() {
 }
 
 function generateTagMenu() {
-    let tagMenu = document.getElementById("tag-menu");
-    tagMenu.innerHTML = ""; // 清空旧标签
+    let tagMenu = document.getElementById("tag-menu-list"); // ✅ 确保这里匹配 HTML
+    if (!tagMenu) {
+        console.error("❌ tag-menu-list 未找到，请检查 HTML 结构！");
+        return;
+    }
 
-    // 生成唯一标签
+    tagMenu.innerHTML = ""; // 清空旧标签
     let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))];
 
     uniqueTags.forEach(tag => {
         let tagElement = document.createElement("div");
         tagElement.classList.add("tag-item");
         tagElement.innerText = tag;
-        tagElement.onclick = () => selectTag(tag); // 绑定点击事件
+        tagElement.onclick = () => selectTag(tag);
         tagMenu.appendChild(tagElement);
     });
 }
+
 
 
 
@@ -671,10 +681,13 @@ function playVideo(video) {
     </div>
 
 <!-- 📌 右侧标签选择 UI -->
-<div id="tag-container">
-    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- 显示当前选中的标签 -->
-    <div id="tag-menu"></div> <!-- 标签按钮会动态生成到这里 -->
+<!-- 📌 右侧标签菜单 -->
+<div id="tagMenu" class="tag-menu">
+    <h3>选择标签</h3>
+    <p>当前选中：<span id="selectedTag">全部</span></p>
+    <div id="tag-menu-list"></div> <!-- 标签按钮会动态生成到这里 -->
 </div>
+
 
 
 
