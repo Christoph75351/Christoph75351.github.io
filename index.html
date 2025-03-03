@@ -203,18 +203,22 @@ video {
    <script>
 let videos = [];
 let filteredVideos = []; // 存储搜索结果
+let selectedTag = "全部"; // 默认选中“全部”
 
 async function loadVideos() {
     try {
-        let response = await fetch('videos/videos.json');
+        const response = await fetch("videos.json"); // 加载 JSON 数据
         videos = await response.json();
-        filteredVideos = [...videos]; // 默认播放所有视频
-        loadTags(); // ✅ 确保标签菜单加载
-        playRandomVideo();
+        generateTagMenu(); // 生成标签
+        playRandomVideo(); // 播放视频
     } catch (error) {
-        console.error("加载视频列表失败:", error);
+        console.error("❌ 加载视频数据失败:", error);
     }
 }
+
+// 页面加载时执行
+document.addEventListener("DOMContentLoaded", loadVideos);
+
 
 function playRandomVideo() {
     if (filteredVideos.length === 0) {
@@ -539,9 +543,11 @@ function loadTags() {
 }
 
 function selectTag(tag) {
-    document.getElementById("selectedTag").innerText = tag; // ✅ 显示当前选中的标签
-    filterVideos(); // 重新筛选视频
+    selectedTag = tag;
+    document.getElementById("selectedTag").innerText = tag; // 更新 UI 显示当前选中的标签
+    filterVideos(); // 筛选视频
 }
+
 
        
 // 📌 选择标签后筛选视频
@@ -564,19 +570,21 @@ function filterVideos() {
 }
 
 function generateTagMenu() {
-    let tagMenu = document.getElementById("tag-menu"); // ✅ 现在正确匹配唯一的标签菜单
+    let tagMenu = document.getElementById("tag-menu");
     tagMenu.innerHTML = ""; // 清空旧标签
 
-    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))]; // ✅ 生成唯一 type_name 标签
+    // 生成唯一标签
+    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))];
 
     uniqueTags.forEach(tag => {
         let tagElement = document.createElement("div");
         tagElement.classList.add("tag-item");
         tagElement.innerText = tag;
-        tagElement.onclick = () => selectTag(tag); // ✅ 绑定点击事件
+        tagElement.onclick = () => selectTag(tag); // 绑定点击事件
         tagMenu.appendChild(tagElement);
     });
 }
+
 
 
 
@@ -653,11 +661,11 @@ document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
     </div>
 
 <!-- 📌 右侧标签选择 UI -->
-<div class="tag-menu-container"> 
-    <h3>选择标签</h3>
-    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- ✅ 显示当前选中的标签 -->
-    <div id="tag-menu" class="tag-menu"></div> <!-- ✅ 这里存放动态标签 -->
+<div id="tag-container">
+    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- 显示当前选中的标签 -->
+    <div id="tag-menu"></div> <!-- 标签按钮会动态生成到这里 -->
 </div>
+
 
 
 
