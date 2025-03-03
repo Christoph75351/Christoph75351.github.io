@@ -248,9 +248,15 @@ function playRandomVideo() {
             hls.loadSource(videoUrl);
             hls.attachMedia(videoElement);
             videoElement.hlsInstance = hls;
-            videoElement.play();
+
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                videoElement.currentTime = 20; // ⏩ 自动跳过前 20 秒
+                videoElement.play();
+            });
+
         } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
             videoElement.src = videoUrl;
+            videoElement.currentTime = 20; // ⏩ 自动跳过前 20 秒
             videoElement.play();
         } else {
             console.error("❌ 你的浏览器不支持 M3U8 播放！");
@@ -258,6 +264,7 @@ function playRandomVideo() {
         }
     } else {
         videoElement.src = videoUrl;
+        videoElement.currentTime = 20; // ⏩ 自动跳过前 20 秒
         videoElement.play();
     }
 
@@ -265,6 +272,7 @@ function playRandomVideo() {
     document.getElementById("videoTime").innerText = data.vod_time;
     document.getElementById("videoCategory").innerText = data.type_name;
 }
+
 
 
 
