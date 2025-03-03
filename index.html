@@ -207,14 +207,18 @@ let selectedTag = "全部"; // 默认选中“全部”
 
 async function loadVideos() {
     try {
-        const response = await fetch("videos/videos.json"); // 加载 JSON 数据
+        const response = await fetch("videos/videos.json"); // 确保路径正确
+        if (!response.ok) throw new Error("❌ 服务器返回错误: " + response.status);
+        
         videos = await response.json();
-        generateTagMenu(); // 生成标签
-        playRandomVideo(); // 播放视频
+        filteredVideos = [...videos]; // ✅ 默认加载所有视频
+        generateTagMenu();
+        playRandomVideo(); // ✅ 确保有视频可播放
     } catch (error) {
         console.error("❌ 加载视频数据失败:", error);
     }
 }
+
 
 // 页面加载时执行
 document.addEventListener("DOMContentLoaded", loadVideos);
@@ -222,48 +226,46 @@ document.addEventListener("DOMContentLoaded", loadVideos);
 
 function playRandomVideo() {
     if (filteredVideos.length === 0) {
-        alert("未找到相关视频");
-        return;
+        console.warn("⚠️ 没有匹配的视频，播放所有视频！");
+        filteredVideos = [...videos]; // ✅ 防止 `filteredVideos` 为空
     }
 
     let randomIndex = Math.floor(Math.random() * filteredVideos.length);
     let data = filteredVideos[randomIndex];
     let videoElement = document.getElementById("video");
-    let videoUrl = data.vod_play_url; // ✅ 这里修正 videoUrl 读取新的 `vod_play_url`
+    let videoUrl = data.vod_play_url;
 
-    console.log("正在播放视频：", videoUrl);
+    console.log("🎥 正在播放视频：", videoUrl);
 
-    // 清除之前的 Hls.js 实例，防止冲突
     if (videoElement.hlsInstance) {
         videoElement.hlsInstance.destroy();
         videoElement.hlsInstance = null;
     }
 
-    // ✅ 确保 M3U8 播放逻辑正确
     if (videoUrl.endsWith(".m3u8")) {
         if (Hls.isSupported()) {
             let hls = new Hls();
             hls.loadSource(videoUrl);
             hls.attachMedia(videoElement);
             videoElement.hlsInstance = hls;
-            videoElement.play(); // ✅ 确保播放
+            videoElement.play();
         } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
             videoElement.src = videoUrl;
-            videoElement.play(); // ✅ 兼容 Safari 直接播放 M3U8
+            videoElement.play();
         } else {
             console.error("❌ 你的浏览器不支持 M3U8 播放！");
             return;
         }
     } else {
         videoElement.src = videoUrl;
-        videoElement.play(); // ✅ 确保 MP4 也能播放
+        videoElement.play();
     }
 
-    // ✅ 更新视频信息（标题、发布时间、分类）
     document.getElementById("videoTitle").innerText = data.vod_name;
     document.getElementById("videoTime").innerText = data.vod_time;
     document.getElementById("videoCategory").innerText = data.type_name;
 }
+
 
 
 
@@ -554,21 +556,22 @@ function selectTag(tag) {
 }
 
 function filterVideos(selectedTag) {
-    let searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    let searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
 
-    let filteredVideos = videos.filter(video => {
+    filteredVideos = videos.filter(video => {
         let titleMatch = video.vod_name.toLowerCase().includes(searchQuery);
-        let tagMatch = selectedTag === "全部" || video.type_name.includes(selectedTag); // ✅ 匹配 type_name
-
+        let tagMatch = selectedTag === "全部" || video.type_name.includes(selectedTag);
         return titleMatch && tagMatch;
     });
 
     if (filteredVideos.length === 0) {
-        alert("未找到相关视频");
-    } else {
-        playRandomVideo(); // 播放筛选后的视频
+        console.warn("⚠️ 未找到匹配的视频，播放所有视频");
+        filteredVideos = [...videos]; // ✅ 防止 `filteredVideos` 为空
     }
+
+    playRandomVideo();
 }
+
 
 
 
