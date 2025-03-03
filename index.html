@@ -207,7 +207,7 @@ let selectedTag = "全部"; // 默认选中“全部”
 
 async function loadVideos() {
     try {
-        const response = await fetch("videos.json"); // 加载 JSON 数据
+        const response = await fetch("videos/videos.json"); // 加载 JSON 数据
         videos = await response.json();
         generateTagMenu(); // 生成标签
         playRandomVideo(); // 播放视频
