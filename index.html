@@ -629,6 +629,16 @@ document.addEventListener("wheel", onVideoSwipe); // PC 端鼠标滚轮
 document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
 
 
+function playVideo(video) {
+    const videoElement = document.getElementById("video-player");
+    videoElement.src = video.vod_play_url;
+    document.getElementById("video-title").textContent = video.vod_name;
+    document.getElementById("video-time").textContent = video.vod_time;
+    document.getElementById("video-category").textContent = video.type_name;
+}
+
+
+
 
 </script>
 
