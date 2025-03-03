@@ -549,21 +549,16 @@ function loadTags() {
 }
 
 function selectTag(tag) {
-    selectedTag = tag;
-    document.getElementById("selectedTag").innerText = tag; // 更新 UI 显示当前选中的标签
-    filterVideos(); // 筛选视频
+    document.getElementById("selectedTag").innerText = tag; // ✅ 更新 UI 显示当前选中的标签
+    filterVideos(tag); // 传入选中的标签
 }
 
-
-       
-// 📌 选择标签后筛选视频
-function filterVideos() {
+function filterVideos(selectedTag) {
     let searchQuery = document.getElementById("searchInput").value.toLowerCase();
-    let selectedTag = document.getElementById("selectedTag").innerText.trim(); // 选中的标签
 
-    filteredVideos = videos.filter(video => {
+    let filteredVideos = videos.filter(video => {
         let titleMatch = video.vod_name.toLowerCase().includes(searchQuery);
-        let tagMatch = selectedTag === "全部" || video.type_name.includes(selectedTag); // ✅ 识别 type_name
+        let tagMatch = selectedTag === "全部" || video.type_name.includes(selectedTag); // ✅ 匹配 type_name
 
         return titleMatch && tagMatch;
     });
@@ -575,24 +570,40 @@ function filterVideos() {
     }
 }
 
+
+
 function generateTagMenu() {
-    let tagMenu = document.getElementById("tag-menu-list"); // ✅ 确保这里匹配 HTML
+    let tagMenu = document.getElementById("tag-menu-list");
     if (!tagMenu) {
         console.error("❌ tag-menu-list 未找到，请检查 HTML 结构！");
         return;
     }
 
     tagMenu.innerHTML = ""; // 清空旧标签
-    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))];
+    let uniqueTags = Array.from(new Set(videos.map(video => video.type_name))); // ✅ 识别 type_name 并去重
+
+    uniqueTags.unshift("全部"); // 添加“全部”选项
 
     uniqueTags.forEach(tag => {
         let tagElement = document.createElement("div");
         tagElement.classList.add("tag-item");
         tagElement.innerText = tag;
-        tagElement.onclick = () => selectTag(tag);
+        tagElement.onclick = () => selectTag(tag); // 绑定点击事件
         tagMenu.appendChild(tagElement);
     });
 }
+
+// 确保 generateTagMenu 在加载视频数据后调用
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("videos/videos.json")
+        .then(response => response.json())
+        .then(data => {
+            videos = data;  // ✅ 确保 `videos` 数据加载
+            generateTagMenu();
+        })
+        .catch(error => console.error("❌ 加载 videos.json 失败", error));
+});
+
 
 
 
@@ -680,15 +691,13 @@ function playVideo(video) {
         <a href="fuwutiaokuan.html">服务条款</a>
     </div>
 
+
 <!-- 📌 右侧标签选择 UI -->
-<!-- 📌 右侧标签菜单 -->
 <div id="tagMenu" class="tag-menu">
     <h3>选择标签</h3>
-    <p>当前选中：<span id="selectedTag">全部</span></p>
-    <div id="tag-menu-list"></div> <!-- 标签按钮会动态生成到这里 -->
+    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- ✅ 显示当前选中的标签 -->
+    <div id="tag-menu-list"></div> <!-- ✅ 确保 ID 匹配 -->
 </div>
-
-
 
 
 
