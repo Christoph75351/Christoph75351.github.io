@@ -564,18 +564,20 @@ function filterVideos() {
 }
 
 function generateTagMenu() {
-    let tagMenu = document.getElementById("tagMenu");
-    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))]; // ✅ 识别 type_name 作为标签
-
+    let tagMenu = document.getElementById("tag-menu"); // ✅ 现在正确匹配唯一的标签菜单
     tagMenu.innerHTML = ""; // 清空旧标签
+
+    let uniqueTags = ["全部", ...new Set(videos.map(video => video.type_name))]; // ✅ 生成唯一 type_name 标签
+
     uniqueTags.forEach(tag => {
         let tagElement = document.createElement("div");
         tagElement.classList.add("tag-item");
         tagElement.innerText = tag;
-        tagElement.onclick = () => selectTag(tag);
+        tagElement.onclick = () => selectTag(tag); // ✅ 绑定点击事件
         tagMenu.appendChild(tagElement);
     });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", loadTags);
@@ -651,12 +653,12 @@ document.addEventListener("touchend", onVideoSwipe); // 手机端滑动
     </div>
 
 <!-- 📌 右侧标签选择 UI -->
-<div id="tagMenu" class="tag-menu">
+<div class="tag-menu-container"> 
     <h3>选择标签</h3>
-<div class="tag-container">
-    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- ✅ 显示选中的标签 -->
-    <div id="tagMenu" class="tag-menu"></div>
+    <p>当前选中：<span id="selectedTag">全部</span></p> <!-- ✅ 显示当前选中的标签 -->
+    <div id="tag-menu" class="tag-menu"></div> <!-- ✅ 这里存放动态标签 -->
 </div>
+
 
 
 <!-- 📌 底部浮动广告 -->
