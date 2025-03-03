@@ -1,48 +1,48 @@
-name: 自动更新 videos.json
+name: 更新视频数据
 
 on:
   schedule:
-    - cron: "0 0 * * *" # 每天 00:00 运行
-  workflow_dispatch: # 允许手动触发
+    - cron: "0 * * * *"  # 每小时运行一次
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   update-videos:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检查 GitHub 仓库
-        uses: actions/checkout@v3
-        
-      - name: 安装 jq
-        run: sudo apt-get install -y jq
-
-      - name: 安装 Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
 
       - name: 获取视频数据
         run: |
           mkdir -p videos  # 确保 /videos 目录存在
           curl -s "https://slapibf.com/api.php/provide/vod/?ac=detail&h=24" -o videos/response.json
-          echo "API Response:"
-          cat videos/response.json
+          
+          # 提取新数据
           jq '.list | map({
               vod_name: .vod_name,
               vod_time: .vod_time,
               vod_play_url: (.vod_play_url | split("#") | map(split("$")[1]) | .[0]),
               type_name: .type_name
-          })' videos/response.json > videos/videos.json  # 提取正确的 M3U8 直链
+          })' videos/response.json > videos/new_videos.json
 
-      - name: 检查 videos.json 是否存在
-        run: ls -l videos/videos.json || echo "❌ videos.json 文件不存在"
+          # 合并旧数据
+          if [ -f videos/videos.json ]; then
+            jq -s '.[0] + .[1] | unique_by(.vod_name)' videos/videos.json videos/new_videos.json > videos/merged.json
+            mv videos/merged.json videos/videos.json
+          else
+            mv videos/new_videos.json videos/videos.json
+          fi
+
+      - name: 配置 Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
 
       - name: 提交更新
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
           git add videos/videos.json
-          git commit -m "🔄 自动更新 videos.json" || exit 0
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/Christoph75351/Christoph75351.github.io.git main
+          git commit -m "自动更新视频数据"
+          git push https://github.com/${{ github.repository }}.git main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}  # 这里需要你的 GitHub 个人访问令牌
