@@ -520,15 +520,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function toggleTagMenu(event) {
     if (event) {
-        event.stopPropagation();
+        event.stopPropagation(); // 防止事件冒泡，避免误关闭菜单
     }
+
     let menu = document.getElementById("tagMenu");
     if (!menu) {
         console.error("❌ tagMenu 未找到，请检查 HTML 结构！");
         return;
     }
-    menu.style.right = menu.style.right === "0px" ? "-35%" : "0px";
+
+    // 切换菜单状态
+    if (menu.style.right === "0px") {
+        menu.style.right = "-35%";
+        document.removeEventListener("click", closeTagMenu); // 取消监听关闭事件
+    } else {
+        menu.style.right = "0px";
+        document.addEventListener("click", closeTagMenu); // 监听点击外部关闭菜单
+    }
 }
+
+// 📌 监听点击空白处关闭标签菜单
+function closeTagMenu(event) {
+    let menu = document.getElementById("tagMenu");
+    if (!menu.contains(event.target)) { // 如果点击的不是菜单本身
+        menu.style.right = "-35%";
+        document.removeEventListener("click", closeTagMenu);
+    }
+}
+
 
 
 
@@ -553,7 +572,13 @@ function loadTags() {
 function selectTag(tag) {
     document.getElementById("selectedTag").innerText = tag; // ✅ 更新 UI 显示当前选中的标签
     filterVideos(tag); // 传入选中的标签
+
+    // 📌 选择标签后，自动收起菜单
+    let menu = document.getElementById("tagMenu");
+    menu.style.right = "-35%";
+    document.removeEventListener("click", closeTagMenu);
 }
+
 
 function filterVideos(selectedTag) {
     let searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
